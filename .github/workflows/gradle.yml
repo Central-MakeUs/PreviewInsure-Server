@@ -49,7 +49,7 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Upload to S3
-      run: aws s3 cp --region ${{ secrets.AWS_REGION }} ./ReviewInsue_Server.zip s3://reviewInsue-bucket/ReviewInsue_Server.zip
+      run: aws s3 cp --region ${{ secrets.AWS_REGION }} ./ReviewInsue_Server.zip s3://reviewinsue-bucket/ReviewInsue_Server.zip
 
     - name: Deploy
       env:
