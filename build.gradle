@@ -42,8 +42,8 @@ swaggerSources {
 
 openapi3 {
     servers = [
-            { url = "http://localhost:8080" },
-            { url = "http://배포중인 주소" }
+            { url = "http://43.202.55.95" },
+            { url = "http://localhost:8080" }
     ]
     title = "API 문서"
     description = "RestDocsWithSwagger Docs"

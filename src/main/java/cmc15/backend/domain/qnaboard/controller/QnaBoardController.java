@@ -20,9 +20,10 @@ public class QnaBoardController {
 
     @GetMapping("/quesion")
     public CustomResponseEntity<QnaBoardResponse.Input> inputQuesion(
+            @AuthenticationPrincipal final Long accountId,
             @RequestParam @Valid final String message,
-            @AuthenticationPrincipal final Long accountId
+            @RequestParam @Valid final Boolean isShare
     ) {
-        return CustomResponseEntity.success(qnaBoardService.inputQuesion(message, accountId));
+        return CustomResponseEntity.success(qnaBoardService.inputQuesion(message, accountId, isShare));
     }
 }

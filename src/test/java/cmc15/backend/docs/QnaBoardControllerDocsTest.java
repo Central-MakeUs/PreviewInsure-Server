@@ -16,8 +16,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,12 +34,13 @@ public class QnaBoardControllerDocsTest extends RestDocsSupport {
     @Test
     void 질문_등록_API() throws Exception {
         // given
-        given(qnaBoardService.inputQuesion(anyString(), any()))
+        given(qnaBoardService.inputQuesion(anyString(), any(), any()))
                 .willReturn(
                         QnaBoardResponse.Input.builder()
                                 .qnaBoardId(1L)
                                 .quesion("보험을 알아보기 쉬운 애플리케이션은 뭘까?")
                                 .answer("보험을 알아보기 쉬운 애플리케이션을 찾고 계시는 군요! ...")
+                                .isShare(true)
                                 .build()
                 );
 
@@ -49,13 +49,16 @@ public class QnaBoardControllerDocsTest extends RestDocsSupport {
                 .summary("질문 등록(AI) API")
                 .requestHeaders(headerWithName("Authorization")
                         .description("Swagger 요청시 해당 입력칸이 아닌 우측 상단 자물쇠 또는 Authorize 버튼을 이용해 토큰을 넣어주세요"))
-                .queryParameters(parameterWithName("message").description("명령 메시지"))
+                .queryParameters(
+                        parameterWithName("message").description("명령 메시지"),
+                        parameterWithName("isShare").description("전체 게시판 질문 내용 공유 여부 (true:1, false:0"))
                 .responseFields(
                         fieldWithPath("code").type(NUMBER).description("상태 코드"),
                         fieldWithPath("message").type(STRING).description("상태 메세지"),
                         fieldWithPath("data.qnaBoardId").type(NUMBER).description("질문 Id"),
                         fieldWithPath("data.quesion").type(STRING).description("질문"),
-                        fieldWithPath("data.answer").type(STRING).description("AI 대답"))
+                        fieldWithPath("data.answer").type(STRING).description("AI 대답"),
+                        fieldWithPath("data.isShare").type(BOOLEAN).description("전체 게시판 질문 공유 여부"))
                 .build();
 
         RestDocumentationResultHandler document = documentHandler("add-quesion", prettyPrint(), resources);
@@ -63,7 +66,8 @@ public class QnaBoardControllerDocsTest extends RestDocsSupport {
         // when // then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/quesion")
                         .header("Authorization", "Bearer AccessToken")
-                        .param("message", "보험을 알아보기 쉬운 애플리케이션은 뭘까?"))
+                        .param("message", "보험을 알아보기 쉬운 애플리케이션은 뭘까?")
+                        .param("isShare", "1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document);

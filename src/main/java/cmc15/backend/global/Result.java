@@ -12,7 +12,11 @@ public enum Result {
     UNEXPECTED_EXCEPTION(-500,"예상치 못한 예외가 발생했습니다."),
 
     // 계정 관련
-    NOT_FOUND_USER(-1001, "계정을 찾을 수 없습니다.");
+    NOT_FOUND_USER(-1001, "계정을 찾을 수 없습니다."),
+
+    // 질문게시판 관련
+    NOT_EMPTY_MESSAGE(-2001, "질문은 비어있을 수 없습니다."),
+    MESSAGE_SIZE_ERROR(-2002, "질문은 최소 4글자 이상, 최대 300 글자 이하입니다.");
 
     private final int code;
     private final String message;

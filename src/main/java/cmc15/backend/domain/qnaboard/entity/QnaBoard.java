@@ -3,6 +3,7 @@ package cmc15.backend.domain.qnaboard.entity;
 import cmc15.backend.domain.account.entity.Account;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,5 +30,8 @@ public class QnaBoard {
 
     @NotBlank
     private String answer;
+
+    @NotNull
+    private Boolean isShare;
 
 }

@@ -16,12 +16,14 @@ public class QnaBoardResponse {
         private Long qnaBoardId;
         private String quesion;
         private String answer;
+        private Boolean isShare;
 
         public static QnaBoardResponse.Input to(QnaBoard qnaBoard) {
             return Input.builder()
                     .qnaBoardId(qnaBoard.getQnaBoardId())
                     .quesion(qnaBoard.getQuesion())
                     .answer(qnaBoard.getAnswer())
+                    .isShare(qnaBoard.getIsShare())
                     .build();
         }
     }
