@@ -42,7 +42,7 @@ swaggerSources {
 
 openapi3 {
     servers = [
-            { url = "http://43.202.55.95" },
+            { url = "https://api.previewinsure.com" },
             { url = "http://localhost:8080" }
     ]
     title = "API 문서"
