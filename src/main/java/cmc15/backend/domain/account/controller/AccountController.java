@@ -22,4 +22,12 @@ public class AccountController {
         return CustomResponseEntity.success(accountService.accountRegister(request));
     }
 
+    /**
+     * @apiNote 랜덤 닉네임 생성 API
+     * @return success
+     */
+    @GetMapping("/register/nickname")
+    public CustomResponseEntity<AccountResponse.NickName> createNickName() {
+        return CustomResponseEntity.success(accountService.createNickName());
+    }
 }

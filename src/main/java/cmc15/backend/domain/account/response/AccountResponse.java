@@ -33,4 +33,18 @@ public class AccountResponse {
                     .build();
         }
     }
+
+    @AllArgsConstructor(access = PRIVATE)
+    @NoArgsConstructor(access = PRIVATE)
+    @Getter
+    @Builder
+    public static class NickName {
+        private String nickName;
+
+        public static NickName to(String nickName) {
+            return NickName.builder()
+                    .nickName(nickName)
+                    .build();
+        }
+    }
 }

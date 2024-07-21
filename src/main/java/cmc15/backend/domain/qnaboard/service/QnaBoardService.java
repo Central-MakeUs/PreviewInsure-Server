@@ -10,6 +10,7 @@ import cmc15.backend.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static cmc15.backend.global.Result.NOT_FOUND_USER;
 
@@ -22,6 +23,7 @@ public class QnaBoardService {
     private final QnaBoardRepository qnaBoardRepository;
     private final AccountRepository accountRepository;
 
+    @Transactional
     public QnaBoardResponse.Input inputQuesion(final String message, final Long accountId, final Boolean isShare) {
         qnaBoardValidator.validateInputQuesion(message);
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
