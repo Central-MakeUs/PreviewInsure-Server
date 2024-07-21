@@ -1,10 +1,13 @@
 package cmc15.backend.domain.account.entity;
 
+import cmc15.backend.domain.qnaboard.entity.QnaBoard;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Collection;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -41,5 +44,16 @@ public class Account {
         this.email = email;
         this.password = password;
         this.authority = authority;
+    }
+
+    @OneToMany(mappedBy = "account")
+    private Collection<QnaBoard> qnaBoard;
+
+    public Collection<QnaBoard> getQnaBoard() {
+        return qnaBoard;
+    }
+
+    public void setQnaBoard(Collection<QnaBoard> qnaBoard) {
+        this.qnaBoard = qnaBoard;
     }
 }
