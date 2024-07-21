@@ -27,4 +27,15 @@ class AccountControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @DisplayName("랜덤 닉네임 생성 API")
+    @Test
+    void 랜덤_닉네임_생성_API() throws Exception {
+        // given
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/register/nickname"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }

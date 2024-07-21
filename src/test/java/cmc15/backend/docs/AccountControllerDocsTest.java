@@ -82,4 +82,31 @@ public class AccountControllerDocsTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andDo(document);
     }
+
+    @DisplayName("랜덤 닉네임 생성 API")
+    @Test
+    void 랜덤_닉네임_생성_API() throws Exception {
+        // given
+        given(accountService.createNickName())
+                .willReturn(AccountResponse.NickName.to("랩하는 얼룩말"));
+
+
+        ResourceSnippetParameters resource = ResourceSnippetParameters.builder()
+                .tag("계정")
+                .summary("랜덤 닉네임 생성 API")
+                .description("랜덤 닉네임을 생성하는 API")
+                .responseFields(
+                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(STRING).description("상태 메세지"),
+                        fieldWithPath("data.nickName").type(STRING).description("생성된 닉네임"))
+                .build();
+
+        RestDocumentationResultHandler document = documentHandler("create_nickname", prettyPrint(), resource);
+
+        // when // then
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/register/nickname"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document);
+    }
 }
