@@ -4,9 +4,9 @@ import cmc15.backend.domain.ControllerTestSupport;
 import cmc15.backend.domain.account.request.AccountRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -17,13 +17,13 @@ class AccountControllerTest extends ControllerTestSupport {
     void 회원가입_API() throws Exception {
         // given
         AccountRequest.Register request = new AccountRequest.Register(
-                "천현우", "김덕배", "hwsa10041@gmail.com", "abc123"
+                "김덕배", "hwsa10041@gmail.com", "abc123"
         );
 
         // when // then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/account")
                         .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -35,6 +35,21 @@ class AccountControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/register/nickname"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("나이 입력 API")
+    @Test
+    void 나이_입력_API() throws Exception {
+        // given
+        AccountRequest.Age request = new AccountRequest.Age(2000, 10);
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/register/age")
+                        .header("Authorization", "Bearer AccessToken")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
