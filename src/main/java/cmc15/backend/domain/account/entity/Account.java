@@ -35,6 +35,9 @@ public class Account {
 
     private Integer age;
 
+    @Column(length = 1)
+    private String gender;
+
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
@@ -51,5 +54,9 @@ public class Account {
 
     public void updateAge(Integer age) {
         this.age = age;
+    }
+
+    public void updateGender(String gender) {
+        this.gender = gender;
     }
 }

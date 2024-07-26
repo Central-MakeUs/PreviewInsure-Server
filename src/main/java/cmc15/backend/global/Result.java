@@ -13,6 +13,8 @@ public enum Result {
 
     // 계정 관련
     NOT_FOUND_USER(-1001, "계정을 찾을 수 없습니다."),
+    NOT_EMPTY_GENDER(-1002, "성별은 NULL은 허용되지만 빈 문자열은 허용되지 않습니다."),
+    ALREADY_ADD_INSURANCE(-1003, "이미 등록된 보험 입니다."),
 
     // 질문게시판 관련
     NOT_EMPTY_MESSAGE(-2001, "질문은 비어있을 수 없습니다."),

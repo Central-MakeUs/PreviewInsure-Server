@@ -1,9 +1,13 @@
 package cmc15.backend.domain.account.request;
 
+import cmc15.backend.domain.account.entity.InsuranceCompany;
+import cmc15.backend.domain.account.entity.InsuranceType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 public class AccountRequest {
 
@@ -28,5 +32,21 @@ public class AccountRequest {
     public static class Age {
         private Integer year;
         private Integer month;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class InsureBoarding {
+        private String gender;
+        private List<InsureBoard> insureBoards;
+
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @Getter
+        public static class InsureBoard {
+            private InsuranceType insuranceType;
+            private InsuranceCompany insuranceCompany;
+        }
     }
 }

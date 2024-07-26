@@ -24,8 +24,8 @@ public class AccountController {
     }
 
     /**
-     * @apiNote 랜덤 닉네임 생성 API
      * @return success
+     * @apiNote 랜덤 닉네임 생성 API
      */
     @GetMapping("/register/nickname")
     public CustomResponseEntity<AccountResponse.NickName> createNickName() {
@@ -33,10 +33,10 @@ public class AccountController {
     }
 
     /**
-     * @apiNote 나이 입력 API
      * @param accountId
      * @param request
      * @return void
+     * @apiNote 나이 입력 API
      */
     @PatchMapping("/register/age")
     public CustomResponseEntity<Void> updateAge(
@@ -44,5 +44,19 @@ public class AccountController {
             @RequestBody @Valid final AccountRequest.Age request
     ) {
         return CustomResponseEntity.success(accountService.updateAge(accountId, request));
+    }
+
+    /**
+     * @apiNote 인슈보딩 입력 API
+     * @param accountId
+     * @param request
+     * @return void
+     */
+    @PatchMapping("/register/board")
+    public CustomResponseEntity<Void> updateInsureBoarding(
+            @AuthenticationPrincipal Long accountId,
+            @RequestBody @Valid final AccountRequest.InsureBoarding request
+    ) {
+        return CustomResponseEntity.success(accountService.updateInsureBoarding(accountId, request));
     }
 }

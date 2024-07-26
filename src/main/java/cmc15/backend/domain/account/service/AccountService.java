@@ -1,9 +1,12 @@
 package cmc15.backend.domain.account.service;
 
 import cmc15.backend.domain.account.entity.Account;
+import cmc15.backend.domain.account.entity.AccountInsurance;
+import cmc15.backend.domain.account.repository.AccountInsuranceRepository;
 import cmc15.backend.domain.account.repository.AccountRepository;
 import cmc15.backend.domain.account.request.AccountRequest;
 import cmc15.backend.domain.account.response.AccountResponse;
+import cmc15.backend.domain.account.validator.AccountServiceValidator;
 import cmc15.backend.global.config.jwt.TokenProvider;
 import cmc15.backend.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 import java.util.Random;
 
 import static cmc15.backend.domain.account.entity.Authority.ROLE_USER;
-import static cmc15.backend.global.Result.NOT_FOUND_USER;
+import static cmc15.backend.global.Result.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +34,9 @@ public class AccountService {
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final AccountServiceValidator accountServiceValidator;
     private final AccountRepository accountRepository;
+    private final AccountInsuranceRepository accountInsuranceRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${nickname.word1}")
@@ -91,8 +97,8 @@ public class AccountService {
     }
 
     /**
-     * @apiNote 나이 입력 API
      * @return void
+     * @apiNote 나이 입력 API
      */
     @Transactional
     public Void updateAge(Long accountId, final AccountRequest.Age request) {
@@ -108,5 +114,39 @@ public class AccountService {
         LocalDate birthDate = LocalDate.of(request.getYear(), request.getMonth(), FIX_AGE_DAY);
         LocalDate currentDate = LocalDate.now();
         return Period.between(birthDate, currentDate).getYears();
+    }
+
+    /**
+     * @return void
+     * @apiNote 인슈보딩 입력 API
+     */
+    @Transactional
+    public Void updateInsureBoarding(final Long accountId, final AccountRequest.InsureBoarding request) {
+        accountServiceValidator.validateEmptyGender(request);
+        Account account = updateGender(accountId, request);
+        saveInsureBoard(request, account);
+        return null;
+    }
+
+    private void saveInsureBoard(AccountRequest.InsureBoarding request, Account account) {
+        List<AccountRequest.InsureBoarding.InsureBoard> insureBoards = request.getInsureBoards();
+        if (insureBoards.size() == 0) return;
+
+        for (AccountRequest.InsureBoarding.InsureBoard insureBoard : insureBoards) {
+            boolean isInsuranceAlreadyExists = accountInsuranceRepository.existsByAccountAndInsuranceTypeAndInsuranceCompany(account, insureBoard.getInsuranceType(), insureBoard.getInsuranceCompany());
+            accountServiceValidator.validateAlreadyAddInsurance(isInsuranceAlreadyExists);
+
+            accountInsuranceRepository.save(AccountInsurance.builder()
+                    .account(account)
+                    .insuranceType(insureBoard.getInsuranceType())
+                    .insuranceCompany(insureBoard.getInsuranceCompany())
+                    .build());
+        }
+    }
+
+    private Account updateGender(Long accountId, AccountRequest.InsureBoarding request) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
+        account.updateGender(request.getGender());
+        return account;
     }
 }
