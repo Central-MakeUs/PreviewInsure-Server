@@ -2,6 +2,8 @@ package cmc15.backend.docs;
 
 import cmc15.backend.RestDocsSupport;
 import cmc15.backend.domain.account.controller.AccountController;
+import cmc15.backend.domain.account.entity.InsuranceCompany;
+import cmc15.backend.domain.account.entity.InsuranceType;
 import cmc15.backend.domain.account.request.AccountRequest;
 import cmc15.backend.domain.account.response.AccountResponse;
 import cmc15.backend.domain.account.service.AccountService;
@@ -12,14 +14,15 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 
+import java.util.List;
+
 import static com.epages.restdocs.apispec.Schema.schema;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -130,6 +133,49 @@ public class AccountControllerDocsTest extends RestDocsSupport {
 
         // when // then
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/register/age")
+                        .header("Authorization", "Bearer AccessToken")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document);
+    }
+
+    @DisplayName("인슈보딩 입력 API")
+    @Test
+    void 인슈보딩_입력_API() throws Exception {
+        // given
+        AccountRequest.InsureBoarding.InsureBoard insureBoard1 = new AccountRequest.InsureBoarding.InsureBoard(
+                InsuranceType.AN, InsuranceCompany.HANA
+        );
+
+        AccountRequest.InsureBoarding.InsureBoard insureBoard2 = new AccountRequest.InsureBoarding.InsureBoard(
+                InsuranceType.DR, InsuranceCompany.HANA
+        );
+
+        AccountRequest.InsureBoarding.InsureBoard insureBoard3 = new AccountRequest.InsureBoarding.InsureBoard(
+                InsuranceType.RE, InsuranceCompany.MERITZ_FIRE
+        );
+
+        AccountRequest.InsureBoarding request = new AccountRequest.InsureBoarding("M", List.of(insureBoard1, insureBoard2, insureBoard3));
+
+        ResourceSnippetParameters resource = ResourceSnippetParameters.builder()
+                .tag("계정")
+                .summary("인슈보딩 입력 API")
+                .requestFields(
+                        fieldWithPath("gender").type(STRING).description("M : 남자 / W : 여자").optional(),
+                        fieldWithPath("insureBoards[]").type(ARRAY).description("보험 유형 및 회사 리스트").optional(),
+                        fieldWithPath("insureBoards[].insuranceType").type(STRING).description("기능/상태코드 문서 참고"),
+                        fieldWithPath("insureBoards[].insuranceCompany").type(STRING).description("기능/상태코드 문서 참고"))
+                .responseFields(
+                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(STRING).description("상태 메세지"))
+                .build();
+
+        RestDocumentationResultHandler document = documentHandler("insure_boarding_add", prettyPrint(), prettyPrint(), resource);
+
+        // when // then
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/register/board")
                         .header("Authorization", "Bearer AccessToken")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON))

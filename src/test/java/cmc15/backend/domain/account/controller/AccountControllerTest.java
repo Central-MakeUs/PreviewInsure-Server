@@ -1,10 +1,14 @@
 package cmc15.backend.domain.account.controller;
 
 import cmc15.backend.domain.ControllerTestSupport;
+import cmc15.backend.domain.account.entity.InsuranceCompany;
+import cmc15.backend.domain.account.entity.InsuranceType;
 import cmc15.backend.domain.account.request.AccountRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -47,6 +51,33 @@ class AccountControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/register/age")
+                        .header("Authorization", "Bearer AccessToken")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("인슈보딩 입력 API")
+    @Test
+    void 인슈보딩_입력_API() throws Exception {
+        // given
+        AccountRequest.InsureBoarding.InsureBoard insureBoard1 = new AccountRequest.InsureBoarding.InsureBoard(
+                InsuranceType.AN, InsuranceCompany.HANA
+        );
+
+        AccountRequest.InsureBoarding.InsureBoard insureBoard2 = new AccountRequest.InsureBoarding.InsureBoard(
+                InsuranceType.DR, InsuranceCompany.HANA
+        );
+
+        AccountRequest.InsureBoarding.InsureBoard insureBoard3 = new AccountRequest.InsureBoarding.InsureBoard(
+                InsuranceType.RE, InsuranceCompany.MERITZ_FIRE
+        );
+
+        AccountRequest.InsureBoarding request = new AccountRequest.InsureBoarding("M", List.of(insureBoard1, insureBoard2, insureBoard3));
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/register/board")
                         .header("Authorization", "Bearer AccessToken")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON))
