@@ -16,6 +16,7 @@ import static com.epages.restdocs.apispec.Schema.schema;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
@@ -37,13 +38,12 @@ public class AccountControllerDocsTest extends RestDocsSupport {
     void 회원가입_API_DOCS() throws Exception {
         // given
         AccountRequest.Register request = new AccountRequest.Register(
-                "천현우", "김덕배", "hwsa10041@gmail.com", "abc123"
+                "김덕배", "hwsa10041@gmail.com", "abc123"
         );
 
         given(accountService.accountRegister(any(AccountRequest.Register.class)))
                 .willReturn(AccountResponse.Connection.builder()
                         .accountId(1L)
-                        .name("천현우")
                         .nickName("김덕배")
                         .email("hwsa10041@gmail.com")
                         .atk("발급된 accessToken")
@@ -57,7 +57,6 @@ public class AccountControllerDocsTest extends RestDocsSupport {
                 .requestSchema(schema("AccountRequest.Register"))
                 .responseSchema(schema("AccountResponse.Connection"))
                 .requestFields(
-                        fieldWithPath("name").type(STRING).description("실제 이름"),
                         fieldWithPath("nickName").type(STRING).description("별명"),
                         fieldWithPath("email").type(STRING).description("이메일"),
                         fieldWithPath("password").type(STRING).description("비밀번호"))
@@ -65,7 +64,6 @@ public class AccountControllerDocsTest extends RestDocsSupport {
                         fieldWithPath("code").type(NUMBER).description("상태 코드"),
                         fieldWithPath("message").type(STRING).description("상태 메세지"),
                         fieldWithPath("data.accountId").type(NUMBER).description("계정 ID"),
-                        fieldWithPath("data.name").type(STRING).description("실제 이름"),
                         fieldWithPath("data.nickName").type(STRING).description("별명"),
                         fieldWithPath("data.email").type(STRING).description("이메일"),
                         fieldWithPath("data.atk").type(STRING).description("발급된 accessToken"),
@@ -105,6 +103,36 @@ public class AccountControllerDocsTest extends RestDocsSupport {
 
         // when // then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/register/nickname"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document);
+    }
+
+    @DisplayName("나이 입력 API")
+    @Test
+    void 나이_입력_API() throws Exception {
+        // given
+        AccountRequest.Age request = new AccountRequest.Age(2000, 10);
+
+        ResourceSnippetParameters resource = ResourceSnippetParameters.builder()
+                .tag("계정")
+                .summary("나이 입력 API")
+                .description("나이 입력 API")
+                .requestFields(
+                        fieldWithPath("year").type(NUMBER).description("태어난 연도"),
+                        fieldWithPath("month").type(NUMBER).description("태어난 달"))
+                .responseFields(
+                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(STRING).description("상태 메세지"))
+                .build();
+
+        RestDocumentationResultHandler document = documentHandler("update_age", prettyPrint(), prettyPrint(), resource);
+
+        // when // then
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/register/age")
+                        .header("Authorization", "Bearer AccessToken")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document);
