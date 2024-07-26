@@ -6,6 +6,7 @@ import cmc15.backend.domain.account.service.AccountService;
 import cmc15.backend.global.CustomResponseEntity;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,5 +30,19 @@ public class AccountController {
     @GetMapping("/register/nickname")
     public CustomResponseEntity<AccountResponse.NickName> createNickName() {
         return CustomResponseEntity.success(accountService.createNickName());
+    }
+
+    /**
+     * @apiNote 나이 입력 API
+     * @param accountId
+     * @param request
+     * @return void
+     */
+    @PatchMapping("/register/age")
+    public CustomResponseEntity<Void> updateAge(
+            @AuthenticationPrincipal final Long accountId,
+            @RequestBody @Valid final AccountRequest.Age request
+    ) {
+        return CustomResponseEntity.success(accountService.updateAge(accountId, request));
     }
 }

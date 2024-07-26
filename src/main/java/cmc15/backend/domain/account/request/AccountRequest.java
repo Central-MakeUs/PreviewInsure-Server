@@ -12,9 +12,6 @@ public class AccountRequest {
     @Getter
     public static class Register {
         @NotBlank(message = "필드가 null이 아니고, 비어 있지 않으며, 공백 문자만으로 이루어지지 않아야 합니다.")
-        private String name;
-
-        @NotBlank(message = "필드가 null이 아니고, 비어 있지 않으며, 공백 문자만으로 이루어지지 않아야 합니다.")
         private String nickName;
 
         @NotBlank(message = "필드가 null이 아니고, 비어 있지 않으며, 공백 문자만으로 이루어지지 않아야 합니다.")
@@ -22,5 +19,14 @@ public class AccountRequest {
 
         @NotBlank(message = "필드가 null이 아니고, 비어 있지 않으며, 공백 문자만으로 이루어지지 않아야 합니다.")
         private String password;
+    }
+
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class Age {
+        private Integer year;
+        private Integer month;
     }
 }

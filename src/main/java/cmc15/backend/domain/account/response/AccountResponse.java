@@ -16,7 +16,6 @@ public class AccountResponse {
     @Builder
     public static class Connection {
         private Long accountId;
-        private String name;
         private String nickName;
         private String email;
         private String atk;
@@ -25,7 +24,6 @@ public class AccountResponse {
         public static Connection to(Account account, String atk, String rtk) {
             return Connection.builder()
                     .accountId(account.getAccountId())
-                    .name(account.getName())
                     .nickName(account.getNickName())
                     .email(account.getEmail())
                     .atk(atk)

@@ -5,6 +5,7 @@ import cmc15.backend.domain.account.repository.AccountRepository;
 import cmc15.backend.domain.account.request.AccountRequest;
 import cmc15.backend.domain.account.response.AccountResponse;
 import cmc15.backend.global.config.jwt.TokenProvider;
+import cmc15.backend.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,9 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Random;
 
 import static cmc15.backend.domain.account.entity.Authority.ROLE_USER;
+import static cmc15.backend.global.Result.NOT_FOUND_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -35,8 +39,9 @@ public class AccountService {
     @Value("${nickname.word2}")
     private String namesPart2;
 
+    public static final int FIX_AGE_DAY = 1;
+
     /**
-     * @param request
      * @return AccountResponse.Connection
      * @apiNote 회원가입 API
      */
@@ -53,7 +58,6 @@ public class AccountService {
 
     private Account saveAccount(AccountRequest.Register request) {
         return accountRepository.save(Account.builder()
-                .name(request.getName())
                 .nickName(request.getNickName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -84,5 +88,25 @@ public class AccountService {
         String nickName = split1[part1Index] + " " + split2[part2Index];
 
         return AccountResponse.NickName.to(nickName);
+    }
+
+    /**
+     * @apiNote 나이 입력 API
+     * @return void
+     */
+    @Transactional
+    public Void updateAge(Long accountId, final AccountRequest.Age request) {
+        int age = calculateAge(request);
+
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
+        account.updateAge(age);
+        return null;
+    }
+
+    // 나이 계산
+    private static int calculateAge(AccountRequest.Age request) {
+        LocalDate birthDate = LocalDate.of(request.getYear(), request.getMonth(), FIX_AGE_DAY);
+        LocalDate currentDate = LocalDate.now();
+        return Period.between(birthDate, currentDate).getYears();
     }
 }
