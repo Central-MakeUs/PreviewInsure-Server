@@ -25,6 +25,5 @@ public class AccountInsurance {
     @Enumerated(STRING)
     private InsuranceType insuranceType;
 
-    @Enumerated(STRING)
-    private InsuranceCompany insuranceCompany;
+    private String insuranceCompany;
 }

@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum InsuranceCompany {
 
     MERITZ_FIRE("메리츠 화재"),
-    HANA("하나 보험");
+    HANA("하나 보험"),
+    ETC("그 외");
 
     private final String companyName;
 }

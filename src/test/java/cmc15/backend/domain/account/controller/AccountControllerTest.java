@@ -1,7 +1,6 @@
 package cmc15.backend.domain.account.controller;
 
 import cmc15.backend.domain.ControllerTestSupport;
-import cmc15.backend.domain.account.entity.InsuranceCompany;
 import cmc15.backend.domain.account.entity.InsuranceType;
 import cmc15.backend.domain.account.request.AccountRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -63,15 +62,15 @@ class AccountControllerTest extends ControllerTestSupport {
     void 인슈보딩_입력_API() throws Exception {
         // given
         AccountRequest.InsureBoarding.InsureBoard insureBoard1 = new AccountRequest.InsureBoarding.InsureBoard(
-                InsuranceType.AN, InsuranceCompany.HANA
+                InsuranceType.AN, "하나손해보험"
         );
 
         AccountRequest.InsureBoarding.InsureBoard insureBoard2 = new AccountRequest.InsureBoarding.InsureBoard(
-                InsuranceType.DR, InsuranceCompany.HANA
+                InsuranceType.DR, "메리즈화재"
         );
 
         AccountRequest.InsureBoarding.InsureBoard insureBoard3 = new AccountRequest.InsureBoarding.InsureBoard(
-                InsuranceType.RE, InsuranceCompany.MERITZ_FIRE
+                InsuranceType.RE, "하나손해보험"
         );
 
         AccountRequest.InsureBoarding request = new AccountRequest.InsureBoarding("M", List.of(insureBoard1, insureBoard2, insureBoard3));

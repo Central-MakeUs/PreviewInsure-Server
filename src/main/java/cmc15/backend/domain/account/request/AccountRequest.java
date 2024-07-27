@@ -1,6 +1,5 @@
 package cmc15.backend.domain.account.request;
 
-import cmc15.backend.domain.account.entity.InsuranceCompany;
 import cmc15.backend.domain.account.entity.InsuranceType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -53,7 +52,7 @@ public class AccountRequest {
             private InsuranceType insuranceType;
 
             @NotNull(message = "보험 회사는 필수 값 입니다.")
-            private InsuranceCompany insuranceCompany;
+            private String insuranceCompany;
         }
     }
 }
