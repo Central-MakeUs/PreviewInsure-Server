@@ -1,8 +1,10 @@
 package cmc15.backend.domain.qnaboard.controller;
 
 import cmc15.backend.domain.ControllerTestSupport;
+import cmc15.backend.domain.qnaboard.dto.request.QnaBoardRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -14,11 +16,13 @@ class QnaBoardControllerTest extends ControllerTestSupport {
     @Test
     void 질문_등록_API() throws Exception {
         // given
+        QnaBoardRequest.Input request = new QnaBoardRequest.Input("질문 입니다.", true, "하나손해보험");
+
         // when // then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/quesion")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/quesion")
                         .header("Authorization", "Bearer AccessToken")
-                        .param("message", "보험을 알아보기 쉬운 애플리케이션은 뭘까?")
-                        .param("isShare", "1"))
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

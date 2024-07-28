@@ -6,10 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static lombok.AccessLevel.PRIVATE;
+
 public class QnaBoardResponse {
 
-    @AllArgsConstructor
-    @NoArgsConstructor
+    @AllArgsConstructor(access = PRIVATE)
+    @NoArgsConstructor(access = PRIVATE)
     @Getter
     @Builder
     public static class Input {
@@ -17,13 +19,15 @@ public class QnaBoardResponse {
         private String quesion;
         private String answer;
         private Boolean isShare;
+        private String insuranceType;
 
-        public static QnaBoardResponse.Input to(QnaBoard qnaBoard) {
+        public static QnaBoardResponse.Input to(final QnaBoard qnaBoard) {
             return Input.builder()
                     .qnaBoardId(qnaBoard.getQnaBoardId())
                     .quesion(qnaBoard.getQuesion())
                     .answer(qnaBoard.getAnswer())
                     .isShare(qnaBoard.getIsShare())
+                    .insuranceType(qnaBoard.getInsuranceType())
                     .build();
         }
     }

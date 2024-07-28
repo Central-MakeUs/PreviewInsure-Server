@@ -2,6 +2,7 @@ package cmc15.backend.domain.qnaboard.service;
 
 import cmc15.backend.domain.account.entity.Account;
 import cmc15.backend.domain.account.repository.AccountRepository;
+import cmc15.backend.domain.qnaboard.dto.request.QnaBoardRequest;
 import cmc15.backend.domain.qnaboard.dto.response.QnaBoardResponse;
 import cmc15.backend.domain.qnaboard.entity.QnaBoard;
 import cmc15.backend.domain.qnaboard.repository.QnaBoardRepository;
@@ -24,16 +25,17 @@ public class QnaBoardService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public QnaBoardResponse.Input inputQuesion(final String message, final Long accountId, final Boolean isShare) {
-        qnaBoardValidator.validateInputQuesion(message);
+    public QnaBoardResponse.Input inputQuesion(final Long accountId, final QnaBoardRequest.Input request) {
+        qnaBoardValidator.validateInputQuesion(request.getQuesion());
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
-        String call = openAiChatModel.call(message);
+        String call = openAiChatModel.call(request.getQuesion());
 
         return QnaBoardResponse.Input.to(qnaBoardRepository.save(QnaBoard.builder()
                 .account(account)
-                .quesion(message)
+                .quesion(request.getQuesion())
                 .answer(call)
-                .isShare(isShare)
+                .isShare(request.getIsShare())
+                .insuranceType(request.getInsuranceType())
                 .build()));
     }
 }
