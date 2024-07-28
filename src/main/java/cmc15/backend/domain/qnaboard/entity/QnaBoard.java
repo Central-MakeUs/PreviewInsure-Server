@@ -35,7 +35,6 @@ public class QnaBoard {
     private Boolean isShare;
 
     @NotBlank
-    @Column(length = 2)
     private String insuranceType;
 
 }

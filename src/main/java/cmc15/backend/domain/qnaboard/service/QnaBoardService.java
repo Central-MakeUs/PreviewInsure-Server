@@ -13,6 +13,9 @@ import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static cmc15.backend.global.Result.NOT_FOUND_USER;
 
 @Service
@@ -24,6 +27,10 @@ public class QnaBoardService {
     private final QnaBoardRepository qnaBoardRepository;
     private final AccountRepository accountRepository;
 
+    /**
+     * @return QnaBoardResponse.Input
+     * @apiNote 질문하기 API
+     */
     @Transactional
     public QnaBoardResponse.Input inputQuesion(final Long accountId, final QnaBoardRequest.Input request) {
         qnaBoardValidator.validateInputQuesion(request.getQuesion());
@@ -37,5 +44,25 @@ public class QnaBoardService {
                 .isShare(request.getIsShare())
                 .insuranceType(request.getInsuranceType())
                 .build()));
+    }
+
+    /**
+     * @return QnaBoardResponse.ReadQuesionTitles
+     * @apiNote 내 질문 제목 리스트 조회 API
+     */
+    public List<QnaBoardResponse.ReadQuesionTitle> readQuesionTitles(Long accountId) {
+        List<QnaBoard> qnaBoards = qnaBoardRepository.findByAccount_AccountId(accountId);
+
+        List<QnaBoardResponse.ReadQuesionTitle> response = new ArrayList<>();
+
+        for (QnaBoard qnaBoard : qnaBoards) {
+            response.add(QnaBoardResponse.ReadQuesionTitle.builder()
+                    .qnaBoardId(qnaBoard.getQnaBoardId())
+                    .title(qnaBoard.getQuesion())
+                    .build());
+
+        }
+
+        return response;
     }
 }

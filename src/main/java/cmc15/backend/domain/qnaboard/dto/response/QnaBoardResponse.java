@@ -31,4 +31,13 @@ public class QnaBoardResponse {
                     .build();
         }
     }
+
+    @AllArgsConstructor(access = PRIVATE)
+    @NoArgsConstructor(access = PRIVATE)
+    @Getter
+    @Builder
+    public static class ReadQuesionTitle {
+        private Long qnaBoardId;
+        private String title;
+    }
 }
