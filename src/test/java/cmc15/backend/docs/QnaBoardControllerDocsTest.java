@@ -14,6 +14,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 
 import java.util.List;
 
+import static cmc15.backend.domain.account.entity.InsuranceType.ED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -36,7 +37,7 @@ public class QnaBoardControllerDocsTest extends RestDocsSupport {
     @Test
     void 질문_등록_API() throws Exception {
         // given
-        QnaBoardRequest.Input request = new QnaBoardRequest.Input("질문 입니다.", true, "하나손해보험");
+        QnaBoardRequest.Input request = new QnaBoardRequest.Input("질문 입니다.", true, ED);
 
         given(qnaBoardService.inputQuesion(any(), any(QnaBoardRequest.Input.class)))
                 .willReturn(QnaBoardResponse.Input.builder()

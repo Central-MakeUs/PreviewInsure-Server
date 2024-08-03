@@ -1,6 +1,7 @@
 package cmc15.backend.domain.qnaboard.controller;
 
 import cmc15.backend.domain.ControllerTestSupport;
+import cmc15.backend.domain.account.entity.InsuranceType;
 import cmc15.backend.domain.qnaboard.dto.request.QnaBoardRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ class QnaBoardControllerTest extends ControllerTestSupport {
     @Test
     void 질문_등록_API() throws Exception {
         // given
-        QnaBoardRequest.Input request = new QnaBoardRequest.Input("질문 입니다.", true, "하나손해보험");
+        QnaBoardRequest.Input request = new QnaBoardRequest.Input("질문 입니다.", true, InsuranceType.DR);
 
         // when // then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/quesion")

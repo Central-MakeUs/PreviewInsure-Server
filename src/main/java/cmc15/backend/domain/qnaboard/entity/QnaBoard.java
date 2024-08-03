@@ -1,6 +1,7 @@
 package cmc15.backend.domain.qnaboard.entity;
 
 import cmc15.backend.domain.account.entity.Account;
+import cmc15.backend.domain.account.entity.InsuranceType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.FetchType.*;
 
 @AllArgsConstructor
@@ -34,7 +36,7 @@ public class QnaBoard {
     @NotNull
     private Boolean isShare;
 
-    @NotBlank
-    private String insuranceType;
+    @Enumerated(STRING)
+    private InsuranceType insuranceType;
 
 }

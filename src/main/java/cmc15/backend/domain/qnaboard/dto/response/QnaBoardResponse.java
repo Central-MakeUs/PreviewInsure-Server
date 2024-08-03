@@ -27,7 +27,7 @@ public class QnaBoardResponse {
                     .quesion(qnaBoard.getQuesion())
                     .answer(qnaBoard.getAnswer())
                     .isShare(qnaBoard.getIsShare())
-                    .insuranceType(qnaBoard.getInsuranceType())
+                    .insuranceType(qnaBoard.getInsuranceType().getTypeContent())
                     .build();
         }
     }
