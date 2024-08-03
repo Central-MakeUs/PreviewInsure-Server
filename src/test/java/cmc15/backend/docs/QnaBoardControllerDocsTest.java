@@ -87,11 +87,11 @@ public class QnaBoardControllerDocsTest extends RestDocsSupport {
         given(qnaBoardService.readQuesionTitles(any()))
                 .willReturn(
                         List.of(
-                                QnaBoardResponse.ReadQuesionTitle.builder().qnaBoardId(1L).title("안녕하세요!").build(),
-                                QnaBoardResponse.ReadQuesionTitle.builder().qnaBoardId(2L).title("질문입니다").build(),
-                                QnaBoardResponse.ReadQuesionTitle.builder().qnaBoardId(3L).title("배가고파요").build(),
-                                QnaBoardResponse.ReadQuesionTitle.builder().qnaBoardId(4L).title("메뉴추천좀해줘").build(),
-                                QnaBoardResponse.ReadQuesionTitle.builder().qnaBoardId(5L).title("놀거리추천좀해줘").build())
+                                QnaBoardResponse.ReadQuesionTitle.builder().qnaBoardId(1L).title("안녕하세요!").insuranceType("운전자 보험").build(),
+                                QnaBoardResponse.ReadQuesionTitle.builder().qnaBoardId(2L).title("질문입니다").insuranceType("상해 보험").build(),
+                                QnaBoardResponse.ReadQuesionTitle.builder().qnaBoardId(3L).title("배가고파요").insuranceType("교육 보험").build(),
+                                QnaBoardResponse.ReadQuesionTitle.builder().qnaBoardId(4L).title("메뉴추천좀해줘").insuranceType("전체").build(),
+                                QnaBoardResponse.ReadQuesionTitle.builder().qnaBoardId(5L).title("놀거리추천좀해줘").insuranceType("저축 보험").build())
                 );
 
         ResourceSnippetParameters resources = ResourceSnippetParameters.builder()
@@ -104,7 +104,8 @@ public class QnaBoardControllerDocsTest extends RestDocsSupport {
                         fieldWithPath("code").type(NUMBER).description("상태 코드"),
                         fieldWithPath("message").type(STRING).description("상태 메세지"),
                         fieldWithPath("data[].qnaBoardId").type(NUMBER).description("질문 Id"),
-                        fieldWithPath("data[].title").type(STRING).description("질문"))
+                        fieldWithPath("data[].title").type(STRING).description("질문"),
+                        fieldWithPath("data[].insuranceType").type(STRING).description("보험 유형"))
                 .build();
 
         RestDocumentationResultHandler document = documentHandler("read-quesion-titles", prettyPrint(), resources);

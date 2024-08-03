@@ -39,5 +39,14 @@ public class QnaBoardResponse {
     public static class ReadQuesionTitle {
         private Long qnaBoardId;
         private String title;
+        private String insuranceType;
+
+        public static ReadQuesionTitle to(QnaBoard qnaBoard) {
+            return ReadQuesionTitle.builder()
+                    .qnaBoardId(qnaBoard.getQnaBoardId())
+                    .title(qnaBoard.getQuesion())
+                    .insuranceType(qnaBoard.getInsuranceType() != null ? qnaBoard.getInsuranceType().getTypeContent() : "전체")
+                    .build();
+        }
     }
 }

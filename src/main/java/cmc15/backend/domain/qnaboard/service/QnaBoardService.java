@@ -13,7 +13,6 @@ import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static cmc15.backend.global.Result.NOT_FOUND_USER;
@@ -52,17 +51,6 @@ public class QnaBoardService {
      */
     public List<QnaBoardResponse.ReadQuesionTitle> readQuesionTitles(Long accountId) {
         List<QnaBoard> qnaBoards = qnaBoardRepository.findByAccount_AccountId(accountId);
-
-        List<QnaBoardResponse.ReadQuesionTitle> response = new ArrayList<>();
-
-        for (QnaBoard qnaBoard : qnaBoards) {
-            response.add(QnaBoardResponse.ReadQuesionTitle.builder()
-                    .qnaBoardId(qnaBoard.getQnaBoardId())
-                    .title(qnaBoard.getQuesion())
-                    .build());
-
-        }
-
-        return response;
+        return qnaBoards.stream().map(QnaBoardResponse.ReadQuesionTitle::to).toList();
     }
 }
