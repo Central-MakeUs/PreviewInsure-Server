@@ -6,8 +6,12 @@ import cmc15.backend.domain.account.entity.InsuranceType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface AccountInsuranceRepository extends JpaRepository<AccountInsurance, Long> {
 
     boolean existsByAccountAndInsuranceTypeAndInsuranceCompany(Account account, InsuranceType insuranceType, String insuranceCompany);
+
+    Optional<AccountInsurance> findByAccountAndInsuranceType(Account account, InsuranceType insuranceType);
 }
