@@ -43,4 +43,5 @@ public class QnaBoardController {
     ) {
         return CustomResponseEntity.success(qnaBoardService.readQuesionTitles(accountId));
     }
+
 }
