@@ -62,7 +62,7 @@ class AccountControllerTest extends ControllerTestSupport {
     void 인슈보딩_입력_API() throws Exception {
         // given
         AccountRequest.InsureBoarding.InsureBoard insureBoard1 = new AccountRequest.InsureBoarding.InsureBoard(
-                InsuranceType.AN, "하나손해보험"
+                InsuranceType.CI, "하나손해보험"
         );
 
         AccountRequest.InsureBoarding.InsureBoard insureBoard2 = new AccountRequest.InsureBoarding.InsureBoard(
@@ -70,7 +70,7 @@ class AccountControllerTest extends ControllerTestSupport {
         );
 
         AccountRequest.InsureBoarding.InsureBoard insureBoard3 = new AccountRequest.InsureBoarding.InsureBoard(
-                InsuranceType.RE, "하나손해보험"
+                InsuranceType.ED, "하나손해보험"
         );
 
         AccountRequest.InsureBoarding request = new AccountRequest.InsureBoarding("M", List.of(insureBoard1, insureBoard2, insureBoard3));
