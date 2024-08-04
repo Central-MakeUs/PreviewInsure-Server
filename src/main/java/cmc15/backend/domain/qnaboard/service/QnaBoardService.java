@@ -1,6 +1,7 @@
 package cmc15.backend.domain.qnaboard.service;
 
 import cmc15.backend.domain.account.entity.Account;
+import cmc15.backend.domain.account.entity.InsuranceType;
 import cmc15.backend.domain.account.repository.AccountRepository;
 import cmc15.backend.domain.qnaboard.dto.request.QnaBoardRequest;
 import cmc15.backend.domain.qnaboard.dto.response.QnaBoardResponse;
@@ -10,6 +11,9 @@ import cmc15.backend.domain.qnaboard.validate.QnaBoardValidator;
 import cmc15.backend.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +39,7 @@ public class QnaBoardService {
         qnaBoardValidator.validateInputQuesion(request.getQuesion());
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         String call = openAiChatModel.call(request.getQuesion());
+        // TODO: 8/3/24 추천된 보험 및 링크 추가 필요
 
         return QnaBoardResponse.Input.to(qnaBoardRepository.save(QnaBoard.builder()
                 .account(account)
@@ -52,5 +57,22 @@ public class QnaBoardService {
     public List<QnaBoardResponse.ReadQuesionTitle> readQuesionTitles(Long accountId) {
         List<QnaBoard> qnaBoards = qnaBoardRepository.findByAccount_AccountId(accountId);
         return qnaBoards.stream().map(QnaBoardResponse.ReadQuesionTitle::to).toList();
+    }
+
+    /**
+     * @return Page<QnaBoardResponse.ReadQuestion>
+     * @apiNote Q&A 게시판 글 페이지 조회 API
+     */
+    // TODO: 8/4/24 QueryDSL 사용 필요해보임
+    public Page<QnaBoardResponse.ReadQuestion> readQuestions(Long accountId, Integer page, InsuranceType insuranceType) {
+        PageRequest paging = PageRequest.of(page, 10, Sort.Direction.ASC, "qnaBoardId");
+
+        if (insuranceType != null) {
+            Page<QnaBoard> qnaBoardPage = qnaBoardRepository.findByInsuranceTypeAndIsShare(insuranceType, paging, true);
+            return qnaBoardPage.map(QnaBoardResponse.ReadQuestion::to);
+        }
+
+        Page<QnaBoard> qnaBoardPage = qnaBoardRepository.findAll(paging);
+        return qnaBoardPage.map(QnaBoardResponse.ReadQuestion::to);
     }
 }

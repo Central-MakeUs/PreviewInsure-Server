@@ -28,9 +28,12 @@ public class QnaBoard {
     private Account account;
 
     @NotBlank
+    @Column(columnDefinition = "TEXT")
     private String quesion;
 
     @NotBlank
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String answer;
 
     @NotNull

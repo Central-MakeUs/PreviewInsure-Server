@@ -26,7 +26,7 @@ public class QnaBoardValidator {
     }
 
     private void validateMessageSize(String message) {
-        if (message.length() < 4 || message.length() > 300) {
+        if (message.length() < 4 || message.length() > 1000) {
             throw new CustomException(MESSAGE_SIZE_ERROR);
         }
     }
