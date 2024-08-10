@@ -109,10 +109,42 @@ public class QnaBoardService {
 
         if (insuranceType != null) {
             Page<QnaBoard> qnaBoardPage = qnaBoardRepository.findByInsuranceTypeAndIsShare(insuranceType, paging, true);
-            return qnaBoardPage.map(QnaBoardResponse.ReadQuestion::to);
+            return qnaBoardPage.map(qnaBoard -> {
+                String recommendLinks = qnaBoard.getRecommendLinks();
+                List<QnaBoardResponse.Link> links = new ArrayList<>();
+
+                if (recommendLinks != null && !recommendLinks.equals("")) {
+                    String[] split = recommendLinks.split("\\|");
+                    for (String s : split) {
+                        String[] split1 = s.split("&");
+                        String insuranceCompany = split1[0];
+                        String insuranceLink = split1[1];
+                        QnaBoardResponse.Link link = QnaBoardResponse.Link.to(insuranceCompany, insuranceLink);
+                        links.add(link);
+                    }
+                }
+
+                return QnaBoardResponse.ReadQuestion.to(qnaBoard, links);
+            });
         }
 
         Page<QnaBoard> qnaBoardPage = qnaBoardRepository.findAll(paging);
-        return qnaBoardPage.map(QnaBoardResponse.ReadQuestion::to);
+        return qnaBoardPage.map(qnaBoard -> {
+            String recommendLinks = qnaBoard.getRecommendLinks();
+            List<QnaBoardResponse.Link> links = new ArrayList<>();
+
+            if (recommendLinks != null && !recommendLinks.equals("")) {
+                String[] split = recommendLinks.split("\\|");
+                for (String s : split) {
+                    String[] split1 = s.split("&");
+                    String insuranceCompany = split1[0];
+                    String insuranceLink = split1[1];
+                    QnaBoardResponse.Link link = QnaBoardResponse.Link.to(insuranceCompany, insuranceLink);
+                    links.add(link);
+                }
+            }
+
+            return QnaBoardResponse.ReadQuestion.to(qnaBoard, links);
+        });
     }
 }
