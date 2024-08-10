@@ -82,6 +82,6 @@ public class AccountController {
             e.printStackTrace();
         }
 
-        return email;
+        return "redirect:/https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + email;
     }
 }
