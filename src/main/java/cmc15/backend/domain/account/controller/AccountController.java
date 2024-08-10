@@ -8,9 +8,14 @@ import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
@@ -64,7 +69,7 @@ public class AccountController {
     }
 
     @PostMapping("/callback/apple")
-    public String test(
+    public ResponseEntity<?> test(
             @RequestBody MultiValueMap<String, Object> request
     ) {
         // 전달 받은 data에서 token 값 저장
@@ -82,6 +87,8 @@ public class AccountController {
             e.printStackTrace();
         }
 
-        return "redirect:/https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + email;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + "email"));
+        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 }
