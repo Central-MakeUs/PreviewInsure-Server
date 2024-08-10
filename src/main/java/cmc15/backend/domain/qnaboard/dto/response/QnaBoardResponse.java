@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -37,8 +36,8 @@ public class QnaBoardResponse {
         }
     }
 
-    @AllArgsConstructor(access = PRIVATE)
-    @NoArgsConstructor(access = PRIVATE)
+    @AllArgsConstructor
+    @NoArgsConstructor
     @Getter
     @Builder
     public static class Link {
@@ -71,22 +70,22 @@ public class QnaBoardResponse {
         }
     }
 
-    @AllArgsConstructor(access = PRIVATE)
-    @NoArgsConstructor(access = PRIVATE)
+    @AllArgsConstructor
+    @NoArgsConstructor
     @Getter
     @Builder
     public static class ReadQuestion {
         private Long qnaBoardId;
         private String question;
         private String answer;
-        private List<String> links;
+        private List<Link> links;
 
-        public static ReadQuestion to(QnaBoard qnaBoard) {
+        public static ReadQuestion to(QnaBoard qnaBoard, List<Link> links) {
             return ReadQuestion.builder()
                     .qnaBoardId(qnaBoard.getQnaBoardId())
                     .question(qnaBoard.getQuesion())
                     .answer(qnaBoard.getAnswer())
-                    .links(Arrays.stream(qnaBoard.getRecommendLinks().split("&")).toList())
+                    .links(links)
                     .build();
         }
     }
