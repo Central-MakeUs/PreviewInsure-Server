@@ -36,13 +36,13 @@ class InsuranceControllerDocsTest extends RestDocsSupport {
     void 보험_타입_추천_API() throws Exception {
         // given
         List<InsuranceResponse.Recommend> insuranceRecommends = List.of(
-                new InsuranceResponse.Recommend(61L, "회사 III", "종신 보험 보장 내용", 0.65, 65500, "http://link61.com"),
-                new InsuranceResponse.Recommend(1L, "회사 A", "종신 보험 보장 내용", 0.05, 5500, "http://link1.com"),
-                new InsuranceResponse.Recommend(91L, "회사 MMMM", "종신 보험 보장 내용", 0.95, 95500, "http://link91.com"),
-                new InsuranceResponse.Recommend(71L, "회사 SSS", "종신 보험 보장 내용", 0.75, 75500, "http://link71.com")
+                new InsuranceResponse.Recommend(61L, "이미지URL", "회사 III", "종신 보험 보장 내용", 0.65, 65500, "http://link61.com"),
+                new InsuranceResponse.Recommend(1L, "이미지URL", "회사 A", "종신 보험 보장 내용", 0.05, 5500, "http://link1.com"),
+                new InsuranceResponse.Recommend(91L, "이미지URL", "회사 MMMM", "종신 보험 보장 내용", 0.95, 95500, "http://link91.com"),
+                new InsuranceResponse.Recommend(71L, "이미지URL", "회사 SSS", "종신 보험 보장 내용", 0.75, 75500, "http://link71.com")
         );
 
-        given(insuranceService.insuranceRecommend(any(),any()))
+        given(insuranceService.insuranceRecommend(any(), any()))
                 .willReturn(
                         InsuranceResponse.MapDetail.builder()
                                 .nickName("김덕배")
@@ -66,6 +66,7 @@ class InsuranceControllerDocsTest extends RestDocsSupport {
                         fieldWithPath("data.insuranceCompany").description("가입된 보험 회사 / 가입 여부 false인 경우 null"),
                         fieldWithPath("data.insuranceLink").description("가입된 보험 회사 링크 / 가입 여부 false인 경우 null"),
                         fieldWithPath("data.insuranceRecommends[].insuranceId").description("보험 Id"),
+                        fieldWithPath("data.insuranceRecommends[].insuranceImage").description("보험 회사 이미지"),
                         fieldWithPath("data.insuranceRecommends[].insuranceCompany").description("보험 회사 이름"),
                         fieldWithPath("data.insuranceRecommends[].insuranceContent").description("보험명"),
                         fieldWithPath("data.insuranceRecommends[].insuranceRate").description("보험 가격 지수"),
