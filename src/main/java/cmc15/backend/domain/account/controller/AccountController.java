@@ -65,7 +65,7 @@ public class AccountController {
 
     @PostMapping("/callback/apple")
     public String test(
-            MultiValueMap<String, Object> request
+            @RequestBody MultiValueMap<String, Object> request
     ) {
         // 전달 받은 data에서 token 값 저장
         String id_token = request.get("id_token").toString();
