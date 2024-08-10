@@ -45,6 +45,7 @@ public class InsuranceResponse {
     @Builder
     public static class Recommend {
         private Long insuranceId;
+        private String insuranceImage;
         private String insuranceCompany;
         private String insuranceContent;
         private Double insuranceRate;
@@ -53,8 +54,14 @@ public class InsuranceResponse {
 
         public static Recommend to(final Insurance insurance, final String gender) {
 
+            String insuranceImage = "";
+            if (insurance.getInsuranceCompany().equals("삼성생명")) {
+                insuranceImage = "https://reviewinsue-bucket.s3.ap-northeast-2.amazonaws.com/image/%E1%84%89%E1%85%A1%E1%86%B7%E1%84%89%E1%85%A5%E1%86%BC%E1%84%92%E1%85%AA%E1%84%8C%E1%85%A2.png";
+            }
+
             return Recommend.builder()
                     .insuranceId(insurance.getInsuranceId())
+                    .insuranceImage(insuranceImage)
                     .insuranceCompany(insurance.getInsuranceCompany())
                     .insuranceContent(insurance.getInsuranceContent())
                     .insuranceRate(insurance.getInsuranceRate())
