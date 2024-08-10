@@ -4,9 +4,12 @@ import cmc15.backend.domain.account.request.AccountRequest;
 import cmc15.backend.domain.account.response.AccountResponse;
 import cmc15.backend.domain.account.service.AccountService;
 import cmc15.backend.global.CustomResponseEntity;
+import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -47,10 +50,10 @@ public class AccountController {
     }
 
     /**
-     * @apiNote 인슈보딩 입력 API
      * @param accountId
      * @param request
      * @return void
+     * @apiNote 인슈보딩 입력 API
      */
     @PatchMapping("/register/board")
     public CustomResponseEntity<Void> updateInsureBoarding(
@@ -58,5 +61,27 @@ public class AccountController {
             @RequestBody @Valid final AccountRequest.InsureBoarding request
     ) {
         return CustomResponseEntity.success(accountService.updateInsureBoarding(accountId, request));
+    }
+
+    @PostMapping("/callback/apple")
+    public String test(
+            MultiValueMap<String, Object> request
+    ) {
+        // 전달 받은 data에서 token 값 저장
+        String id_token = request.get("id_token").toString();
+        String email = "";
+        try {
+            //token값 decode처리
+            SignedJWT signedJWT = SignedJWT.parse(id_token);
+            //token값에서 payload 저장
+            ReadOnlyJWTClaimsSet payload = signedJWT.getJWTClaimsSet();
+            //payload에서 email 값 저장
+            email = payload.getClaim("email").toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return email;
     }
 }
