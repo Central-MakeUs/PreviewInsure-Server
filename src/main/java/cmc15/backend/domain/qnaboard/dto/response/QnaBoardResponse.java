@@ -23,14 +23,32 @@ public class QnaBoardResponse {
         private String answer;
         private Boolean isShare;
         private String insuranceType;
+        private List<Link> links;
 
-        public static QnaBoardResponse.Input to(final QnaBoard qnaBoard) {
+        public static QnaBoardResponse.Input to(final QnaBoard qnaBoard, final List<Link> links) {
             return Input.builder()
                     .qnaBoardId(qnaBoard.getQnaBoardId())
                     .quesion(qnaBoard.getQuesion())
                     .answer(qnaBoard.getAnswer())
                     .isShare(qnaBoard.getIsShare())
                     .insuranceType(qnaBoard.getInsuranceType().getTypeContent())
+                    .links(links)
+                    .build();
+        }
+    }
+
+    @AllArgsConstructor(access = PRIVATE)
+    @NoArgsConstructor(access = PRIVATE)
+    @Getter
+    @Builder
+    public static class Link {
+        private String insuranceCompany;
+        private String insuranceLink;
+
+        public static QnaBoardResponse.Link to(final String insuranceCompany, final String insuranceLink) {
+            return Link.builder()
+                    .insuranceCompany(insuranceCompany)
+                    .insuranceLink(insuranceLink)
                     .build();
         }
     }

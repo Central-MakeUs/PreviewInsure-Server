@@ -46,6 +46,10 @@ public class QnaBoardControllerDocsTest extends RestDocsSupport {
                         .answer("보험을 알아보기 쉬운 애플리케이션을 찾고 계시는 군요! ...")
                         .isShare(true)
                         .insuranceType("하나손해보험")
+                        .links(List.of(
+                                QnaBoardResponse.Link.to("삼성화재", "https://www.samsungfire.com"),
+                                QnaBoardResponse.Link.to("한화생명", "https://www.hanwhalife.com"),
+                                QnaBoardResponse.Link.to("DB손해보험", "https://www.idbins.com")))
                         .build()
                 );
 
@@ -65,7 +69,10 @@ public class QnaBoardControllerDocsTest extends RestDocsSupport {
                         fieldWithPath("data.quesion").type(STRING).description("질문"),
                         fieldWithPath("data.answer").type(STRING).description("AI 대답"),
                         fieldWithPath("data.isShare").type(BOOLEAN).description("전체 게시판 질문 공유 여부"),
-                        fieldWithPath("data.insuranceType").type(STRING).description("보험 유형"))
+                        fieldWithPath("data.insuranceType").type(STRING).description("보험 유형"),
+                        fieldWithPath("data.links[]").type(ARRAY).description("제공된 보험 리스트"),
+                        fieldWithPath("data.links[].insuranceCompany").type(STRING).description("제공된 보험 회사 이름"),
+                        fieldWithPath("data.links[].insuranceLink.").type(STRING).description("제공된 보험 회사 사이트"))
                 .build();
 
         RestDocumentationResultHandler document = documentHandler("add-quesion", prettyPrint(), resources);
