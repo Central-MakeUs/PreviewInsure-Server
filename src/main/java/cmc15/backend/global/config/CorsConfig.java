@@ -22,8 +22,8 @@ public class CorsConfig {
         config.addAllowedOrigin("http://localhost:5173/");
         config.addAllowedOrigin("https://api.previewinsure.com");
         config.addAllowedOrigin("https://api.previewinsure.com/");
-        config.addAllowedHeader("https://preview-insure-web-git-dev-sehuns-projects.vercel.app");
-        config.addAllowedHeader("https://preview-insure-web-git-dev-sehuns-projects.vercel.app/");
+        config.addAllowedOrigin("https://preview-insure-web-git-dev-sehuns-projects.vercel.app");
+        config.addAllowedOrigin("https://preview-insure-web-git-dev-sehuns-projects.vercel.app/");
 
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
