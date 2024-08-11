@@ -29,8 +29,6 @@ import static cmc15.backend.global.Result.FAIL;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class AccountController {
-    private final AccountRepository accountRepository;
-    private final TokenProvider tokenProvider;
     private final AccountService accountService;
 
     // 회원가입 API
