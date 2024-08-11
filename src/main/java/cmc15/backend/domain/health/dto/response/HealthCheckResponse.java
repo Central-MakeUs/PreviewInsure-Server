@@ -14,7 +14,7 @@ public class HealthCheckResponse {
     public static class Success {
         private Boolean isHealthCheck;
 
-        public static HealthCheckResponse.Success to(final Boolean isHealthCheck) {
+        public static Success to(final Boolean isHealthCheck) {
             return Success.builder()
                     .isHealthCheck(isHealthCheck)
                     .build();
@@ -29,7 +29,7 @@ public class HealthCheckResponse {
         private String name;
         private String input;
 
-        public static HealthCheckResponse.RequestSuccess to(String name, String input) {
+        public static RequestSuccess to(String name, String input) {
             return RequestSuccess.builder()
                     .name(name)
                     .input(input)

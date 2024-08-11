@@ -24,7 +24,7 @@ public class QnaBoardResponse {
         private String insuranceType;
         private List<Link> links;
 
-        public static QnaBoardResponse.Input to(final QnaBoard qnaBoard, final List<Link> links) {
+        public static Input to(final QnaBoard qnaBoard, final List<Link> links) {
             return Input.builder()
                     .qnaBoardId(qnaBoard.getQnaBoardId())
                     .quesion(qnaBoard.getQuesion())
@@ -44,7 +44,7 @@ public class QnaBoardResponse {
         private String insuranceCompany;
         private String insuranceLink;
 
-        public static QnaBoardResponse.Link to(final String insuranceCompany, final String insuranceLink) {
+        public static Link to(final String insuranceCompany, final String insuranceLink) {
             return Link.builder()
                     .insuranceCompany(insuranceCompany)
                     .insuranceLink(insuranceLink)

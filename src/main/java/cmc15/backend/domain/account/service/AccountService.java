@@ -2,6 +2,7 @@ package cmc15.backend.domain.account.service;
 
 import cmc15.backend.domain.account.entity.Account;
 import cmc15.backend.domain.account.entity.AccountInsurance;
+import cmc15.backend.domain.account.entity.Platform;
 import cmc15.backend.domain.account.repository.AccountInsuranceRepository;
 import cmc15.backend.domain.account.repository.AccountRepository;
 import cmc15.backend.domain.account.request.AccountRequest;
@@ -9,13 +10,8 @@ import cmc15.backend.domain.account.response.AccountResponse;
 import cmc15.backend.domain.account.validator.AccountServiceValidator;
 import cmc15.backend.global.config.jwt.TokenProvider;
 import cmc15.backend.global.exception.CustomException;
-import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -23,10 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.net.URI;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -47,6 +40,7 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final AccountInsuranceRepository accountInsuranceRepository;
     private final PasswordEncoder passwordEncoder;
+    private final List<OAuth2Service> oAuth2Services;
 
     @Value("${nickname.word1}")
     private String namesPart1;
@@ -159,38 +153,37 @@ public class AccountService {
         return account;
     }
 
+    /**
+     * @param platform
+     * @param code
+     * @param appleToken
+     * @return
+     */
     @Transactional
-    public ResponseEntity<?> appleLogin(final MultiValueMap<String, Object> request) {
-        // 전달 받은 data에서 token 값 저장
-        String id_token = request.get("id_token").toString();
-        String email = "";
-        try {
-            //token값 decode처리
-            SignedJWT signedJWT = SignedJWT.parse(id_token);
-            //token값에서 payload 저장
-            ReadOnlyJWTClaimsSet payload = signedJWT.getJWTClaimsSet();
-            //payload에서 email 값 저장
-            email = payload.getClaim("email").toString();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+    public AccountResponse.OAuthConnection socialLogin(final Platform platform, final String code, final String appleToken) {
+        String oAuthEmail = "";
+        for (OAuth2Service oAuth2Service : oAuth2Services) {
+            if (oAuth2Service.suppots().equals(platform)) {
+                oAuthEmail = oAuth2Service.toOAuthEntityResponse(platform, code, appleToken);
+            }
         }
 
-        Optional<Account> optionalAccount = accountRepository.findByEmail(email);
-        String accountEmail = email;
+        if (oAuthEmail.isBlank()) throw new CustomException(NOT_MATCHED_PLATFORM);
+
+        Optional<Account> optionalAccount = accountRepository.findByEmail(oAuthEmail);
+        String email = oAuthEmail;
         Account account = optionalAccount.orElseGet(() ->
                 accountRepository.save(Account.builder()
-                        .email(accountEmail)
+                        .email(email)
                         .password("$2a$10$7NPHBBkAuyWG/lJz6Yv8/.n099SecuAwWkQq4DMkxeVKWl/R7o5.2")
                         .authority(ROLE_USER)
                         .build())
         );
 
         String atk = tokenProvider.createAccessToken(account.getAccountId(), getAuthentication(account.getEmail(), "abc123"));
-        String isRegister = (optionalAccount.isPresent()) ? "Y" : "N";
+        String rtk = tokenProvider.createRefreshToken(account.getEmail());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk + "&isRegister=" + isRegister));
-        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+        return AccountResponse.OAuthConnection.to(account, optionalAccount.isPresent(), atk, rtk);
+
     }
 }

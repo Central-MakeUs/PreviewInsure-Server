@@ -14,6 +14,26 @@ public class AccountResponse {
     @NoArgsConstructor(access = PRIVATE)
     @Getter
     @Builder
+    public static class OAuthConnection {
+        private Long accountId;
+        private String atk;
+        private String rtk;
+        private Boolean isRegister;
+
+        public static OAuthConnection to(Account account, Boolean isRegister, String atk, String rtk) {
+            return OAuthConnection.builder()
+                    .accountId(account.getAccountId())
+                    .isRegister(isRegister)
+                    .atk(atk)
+                    .rtk(rtk)
+                    .build();
+        }
+    }
+
+    @AllArgsConstructor(access = PRIVATE)
+    @NoArgsConstructor(access = PRIVATE)
+    @Getter
+    @Builder
     public static class Connection {
         private Long accountId;
         private String nickName;

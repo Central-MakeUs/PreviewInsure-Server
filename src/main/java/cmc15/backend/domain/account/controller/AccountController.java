@@ -1,35 +1,35 @@
 package cmc15.backend.domain.account.controller;
 
-import cmc15.backend.domain.account.entity.Account;
-import cmc15.backend.domain.account.repository.AccountRepository;
+import cmc15.backend.domain.account.entity.Platform;
 import cmc15.backend.domain.account.request.AccountRequest;
 import cmc15.backend.domain.account.response.AccountResponse;
 import cmc15.backend.domain.account.service.AccountService;
 import cmc15.backend.global.CustomResponseEntity;
-import cmc15.backend.global.config.jwt.TokenProvider;
-import cmc15.backend.global.exception.CustomException;
-import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.util.Optional;
-
-import static cmc15.backend.domain.account.entity.Authority.ROLE_USER;
-import static cmc15.backend.global.Result.FAIL;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class AccountController {
     private final AccountService accountService;
+
+    /**
+     * @param code
+     * @param appleToken
+     * @return
+     * @apiNote 소셜 로그인 API
+     */
+    @PostMapping("/oauth")
+    public CustomResponseEntity<AccountResponse.OAuthConnection> socialLogin(
+            @RequestParam final Platform platform,
+            @RequestParam final String code,
+            @RequestParam(required = false) final String appleToken
+    ) {
+        return CustomResponseEntity.success(accountService.socialLogin(platform, code, appleToken));
+    }
 
     // 회원가입 API
     @PostMapping("/account")
@@ -74,12 +74,5 @@ public class AccountController {
             @RequestBody @Valid final AccountRequest.InsureBoarding request
     ) {
         return CustomResponseEntity.success(accountService.updateInsureBoarding(accountId, request));
-    }
-
-    @PostMapping("/callback/apple")
-    public ResponseEntity<?> appleLogin(
-            @RequestBody MultiValueMap<String, Object> request
-    ) {
-        return accountService.appleLogin(request);
     }
 }
