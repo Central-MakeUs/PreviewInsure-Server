@@ -69,26 +69,9 @@ public class AccountController {
     }
 
     @PostMapping("/callback/apple")
-    public ResponseEntity<?> test(
+    public ResponseEntity<?> appleLogin(
             @RequestBody MultiValueMap<String, Object> request
     ) {
-        // 전달 받은 data에서 token 값 저장
-        String id_token = request.get("id_token").toString();
-        String email = "";
-        try {
-            //token값 decode처리
-            SignedJWT signedJWT = SignedJWT.parse(id_token);
-            //token값에서 payload 저장
-            ReadOnlyJWTClaimsSet payload = signedJWT.getJWTClaimsSet();
-            //payload에서 email 값 저장
-            email = payload.getClaim("email").toString();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + "email"));
-        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+        return accountService.appleLogin(request);
     }
 }

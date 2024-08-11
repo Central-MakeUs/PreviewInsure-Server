@@ -9,8 +9,13 @@ import cmc15.backend.domain.account.response.AccountResponse;
 import cmc15.backend.domain.account.validator.AccountServiceValidator;
 import cmc15.backend.global.config.jwt.TokenProvider;
 import cmc15.backend.global.exception.CustomException;
+import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -18,10 +23,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import static cmc15.backend.domain.account.entity.Authority.ROLE_USER;
@@ -148,5 +157,42 @@ public class AccountService {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         account.updateGender(request.getGender());
         return account;
+    }
+
+    @Transactional
+    public ResponseEntity<?> appleLogin(final MultiValueMap<String, Object> request) {
+        // 전달 받은 data에서 token 값 저장
+        String id_token = request.get("id_token").toString();
+        String email = "";
+        try {
+            //token값 decode처리
+            SignedJWT signedJWT = SignedJWT.parse(id_token);
+            //token값에서 payload 저장
+            ReadOnlyJWTClaimsSet payload = signedJWT.getJWTClaimsSet();
+            //payload에서 email 값 저장
+            email = payload.getClaim("email").toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (email.isBlank()) throw new CustomException(FAIL);
+
+        Optional<Account> optionalAccount = accountRepository.findByEmail(email);
+        String accountEmail = email;
+        Account account = optionalAccount.orElseGet(() ->
+                accountRepository.save(Account.builder()
+                        .email(accountEmail)
+                        .password("$2a$10$7NPHBBkAuyWG/lJz6Yv8/.n099SecuAwWkQq4DMkxeVKWl/R7o5.2")
+                        .authority(ROLE_USER)
+                        .build())
+        );
+
+        String atk = tokenProvider.createAccessToken(account.getAccountId(), getAuthentication(account.getEmail(), "abc123"));
+        String isRegister = (optionalAccount.isPresent()) ? "Y" : "N";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk + "&isRegister=" + isRegister));
+        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 }
