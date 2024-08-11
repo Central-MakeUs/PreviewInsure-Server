@@ -82,38 +82,6 @@ public class AccountController {
     public ResponseEntity<?> appleLogin(
             @RequestBody MultiValueMap<String, Object> request
     ) {
-        // 전달 받은 data에서 token 값 저장
-        String id_token = request.get("id_token").toString();
-        String email = "";
-        try {
-            //token값 decode처리
-            SignedJWT signedJWT = SignedJWT.parse(id_token);
-            //token값에서 payload 저장
-            ReadOnlyJWTClaimsSet payload = signedJWT.getJWTClaimsSet();
-            //payload에서 email 값 저장
-            email = payload.getClaim("email").toString();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (email.isBlank()) throw new CustomException(FAIL);
-
-        Optional<Account> optionalAccount = accountRepository.findByEmail(email);
-        String accountEmail = email;
-        Account account = optionalAccount.orElseGet(() ->
-                accountRepository.save(Account.builder()
-                        .email(accountEmail)
-                        .password("$2a$10$7NPHBBkAuyWG/lJz6Yv8/.n099SecuAwWkQq4DMkxeVKWl/R7o5.2")
-                        .authority(ROLE_USER)
-                        .build())
-        );
-
-        String atk = tokenProvider.createAccessToken(account.getAccountId(), accountService.getAuthentication(account.getEmail(), "abc123"));
-        String isRegister = (optionalAccount.isPresent()) ? "Y" : "N";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk + "&isRegister=" + isRegister));
-        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+        return accountService.appleLogin(request);
     }
 }
