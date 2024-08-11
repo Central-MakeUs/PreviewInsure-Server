@@ -1,11 +1,11 @@
 package cmc15.backend.domain.qnaboard.validate;
 
 
+import cmc15.backend.global.Constants;
 import cmc15.backend.global.exception.CustomException;
 import org.springframework.stereotype.Component;
 
-import static cmc15.backend.global.Result.MESSAGE_SIZE_ERROR;
-import static cmc15.backend.global.Result.NOT_EMPTY_MESSAGE;
+import static cmc15.backend.global.Result.*;
 
 @Component
 public class QnaBoardValidator {
@@ -17,6 +17,7 @@ public class QnaBoardValidator {
     public void validateInputQuesion(String message) {
         validateNotEmptyMessage(message);
         validateMessageSize((message));
+        validateWord(message);
     }
 
     private void validateNotEmptyMessage(String message) {
@@ -28,6 +29,14 @@ public class QnaBoardValidator {
     private void validateMessageSize(String message) {
         if (message.length() < 4 || message.length() > 1000) {
             throw new CustomException(MESSAGE_SIZE_ERROR);
+        }
+    }
+
+    private void validateWord(String message) {
+        for (String bannedWord : Constants.BANNED_WORDS) {
+            if (message.contains(bannedWord)) {
+                throw new CustomException(USE_BANNED_WORD);
+            }
         }
     }
 
