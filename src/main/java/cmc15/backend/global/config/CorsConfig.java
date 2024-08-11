@@ -24,6 +24,8 @@ public class CorsConfig {
         config.addAllowedOrigin("https://api.previewinsure.com/");
         config.addAllowedOrigin("https://preview-insure-web-git-dev-sehuns-projects.vercel.app");
         config.addAllowedOrigin("https://preview-insure-web-git-dev-sehuns-projects.vercel.app/");
+        config.addAllowedOrigin("https://29da-39-117-125-106.ngrok-free.app/");
+        config.addAllowedOrigin("https://29da-39-117-125-106.ngrok-free.app");
 
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
