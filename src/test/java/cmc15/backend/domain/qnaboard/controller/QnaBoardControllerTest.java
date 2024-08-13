@@ -54,4 +54,17 @@ class QnaBoardControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @DisplayName("QnA 게시판 상세 조회 API")
+    @Test
+    void 질문_게시판_상세_조회_API() throws Exception {
+        // given
+
+        // when // then
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/question/detail")
+                        .header("Authorization", "Bearer AccessToken")
+                        .param("qnaBoardId", "148"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }

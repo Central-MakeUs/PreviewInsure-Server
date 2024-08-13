@@ -179,35 +179,35 @@ public class QnaBoardControllerDocsTest extends RestDocsSupport {
                         parameterWithName("page").description("조회할 페이지 번호")
                 )
                 .responseFields(
-                        fieldWithPath("code").description("상태 코드"),
-                        fieldWithPath("message").description("상태 메시지"),
-                        fieldWithPath("data").description("데이터 객체"),
-                        fieldWithPath("data.totalPages").description("총 페이지 수"),
-                        fieldWithPath("data.totalElements").description("총 요소 수"),
-                        fieldWithPath("data.size").description("페이지 크기"),
-                        fieldWithPath("data.content").description("질문과 답변 목록"),
-                        fieldWithPath("data.content[].qnaBoardId").description("QnA 게시판 ID"),
-                        fieldWithPath("data.content[].question").description("질문"),
-                        fieldWithPath("data.content[].answer").description("답변"),
-                        fieldWithPath("data.content[].links").description("링크 목록"),
-                        fieldWithPath("data.content[].links[].insuranceCompany").description("보험 회사 이름"),
-                        fieldWithPath("data.content[].links[].insuranceLink").description("보험 링크"),
-                        fieldWithPath("data.number").description("현재 페이지 번호"),
-                        fieldWithPath("data.sort.empty").description("정렬이 비어있는지 여부"),
-                        fieldWithPath("data.sort.unsorted").description("정렬이 정렬되지 않은 상태인지 여부"),
-                        fieldWithPath("data.sort.sorted").description("정렬 상태"),
-                        fieldWithPath("data.pageable.pageNumber").description("현재 페이지 번호"),
-                        fieldWithPath("data.pageable.pageSize").description("페이지 크기"),
-                        fieldWithPath("data.pageable.sort.empty").description("정렬이 비어있는지 여부"),
-                        fieldWithPath("data.pageable.sort.unsorted").description("정렬이 정렬되지 않은 상태인지 여부"),
-                        fieldWithPath("data.pageable.sort.sorted").description("정렬 상태"),
-                        fieldWithPath("data.pageable.offset").description("오프셋"),
-                        fieldWithPath("data.pageable.paged").description("페이지 매김 여부"),
-                        fieldWithPath("data.pageable.unpaged").description("비페이지 매김 여부"),
-                        fieldWithPath("data.numberOfElements").description("요소 수"),
-                        fieldWithPath("data.first").description("첫 페이지 여부"),
-                        fieldWithPath("data.last").description("마지막 페이지 여부"),
-                        fieldWithPath("data.empty").description("페이지가 비어있는지 여부"))
+                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(STRING).description("상태 메시지"),
+                        fieldWithPath("data").type(OBJECT).description("데이터 객체"),
+                        fieldWithPath("data.totalPages").type(NUMBER).description("총 페이지 수"),
+                        fieldWithPath("data.totalElements").type(NUMBER).description("총 요소 수"),
+                        fieldWithPath("data.size").type(NUMBER).description("페이지 크기"),
+                        fieldWithPath("data.content").type(ARRAY).description("질문과 답변 목록"),
+                        fieldWithPath("data.content[].qnaBoardId").type(NUMBER).description("QnA 게시판 ID"),
+                        fieldWithPath("data.content[].question").type(STRING).description("질문"),
+                        fieldWithPath("data.content[].answer").type(STRING).description("답변"),
+                        fieldWithPath("data.content[].links").type(ARRAY).description("링크 목록"),
+                        fieldWithPath("data.content[].links[].insuranceCompany").type(STRING).description("보험 회사 이름"),
+                        fieldWithPath("data.content[].links[].insuranceLink").type(STRING).description("보험 링크"),
+                        fieldWithPath("data.number").type(NUMBER).description("현재 페이지 번호"),
+                        fieldWithPath("data.sort.empty").type(BOOLEAN).description("정렬이 비어있는지 여부"),
+                        fieldWithPath("data.sort.unsorted").type(BOOLEAN).description("정렬이 정렬되지 않은 상태인지 여부"),
+                        fieldWithPath("data.sort.sorted").type(BOOLEAN).description("정렬 상태"),
+                        fieldWithPath("data.pageable.pageNumber").type(NUMBER).description("현재 페이지 번호"),
+                        fieldWithPath("data.pageable.pageSize").type(NUMBER).description("페이지 크기"),
+                        fieldWithPath("data.pageable.sort.empty").type(BOOLEAN).description("정렬이 비어있는지 여부"),
+                        fieldWithPath("data.pageable.sort.unsorted").type(BOOLEAN).description("정렬이 정렬되지 않은 상태인지 여부"),
+                        fieldWithPath("data.pageable.sort.sorted").type(BOOLEAN).description("정렬 상태"),
+                        fieldWithPath("data.pageable.offset").type(NUMBER).description("오프셋"),
+                        fieldWithPath("data.pageable.paged").type(BOOLEAN).description("페이지 매김 여부"),
+                        fieldWithPath("data.pageable.unpaged").type(BOOLEAN).description("비페이지 매김 여부"),
+                        fieldWithPath("data.numberOfElements").type(NUMBER).description("요소 수"),
+                        fieldWithPath("data.first").type(BOOLEAN).description("첫 페이지 여부"),
+                        fieldWithPath("data.last").type(BOOLEAN).description("마지막 페이지 여부"),
+                        fieldWithPath("data.empty").type(BOOLEAN).description("페이지가 비어있는지 여부"))
                 .build();
 
         RestDocumentationResultHandler document = documentHandler("read-quesions", prettyPrint(), prettyPrint(), resources);
@@ -217,6 +217,62 @@ public class QnaBoardControllerDocsTest extends RestDocsSupport {
                         .header("Authorization", "Bearer AccessToken")
                         .param("page", "0")
                         .param("insuranceType", "LF"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document);
+    }
+
+    @DisplayName("QnA 게시판 상세 조회 API")
+    @Test
+    void 질문_게시판_상세_조회_API() throws Exception {
+        // given
+        given(qnaBoardService.readQuestion(any(), any()))
+                .willReturn(new QnaBoardResponse.ReadQuestion(148L, "나는 28살인데 아직 보험에 대해 잘몰라.. 이제 들면 좋을 보험좀 추천해줄랭", "28살이시라면, 지금이 보험 가입을 고려하기에 아주 좋은 시기입니다. 아직 젊고 건강할 때 가입하면 보험료도 저렴하고, 보장 범위도 넓을 수 있습니다. 먼저 고려해볼 보험 상품을 몇 가지 추천드리겠습니다.\n" +
+                        "\n" +
+                        "1. 건강보험\n" +
+                        "   - 삼성화재의 '건강보험'\n" +
+                        "   - 추천 이유: 젊을 때 가입하면 보험료가 저렴하고, 다양한 질병과 사고를 포괄적으로 보장해줍니다.\n" +
+                        "\n" +
+                        "2. 생명보험\n" +
+                        "   - 한화생명의 '생명보험'\n" +
+                        "   - 추천 이유: 사망 시 가족에게 경제적 지원을 제공하며, 일부 상품은 건강 보장도 함께 제공합니다.\n" +
+                        "\n" +
+                        "3. 저축보험\n" +
+                        "   - 교보생명의 '저축보험'\n" +
+                        "   - 추천 이유: 저축과 보험을 동시에 할 수 있어 미래 자산을 마련하는데 유용합니다.\n" +
+                        "\n" +
+                        "이렇게 세 가지 보험을 추천드립니다. 각 보험은 보장 내용과 혜택이 다르므로, 자신의 필요와 상황에 맞춰 선택하시면 좋겠습니다. 추가로 궁금한 점이 있으면 언제든지 물어보세요!\n",
+                        List.of(new QnaBoardResponse.Link("삼성화재", "https://www.samsungfire.com"),
+                                new QnaBoardResponse.Link("한화생명", "https://www.hanwhalife.com"),
+                                new QnaBoardResponse.Link("교보생명", "https://www.kyobo.co.kr"))
+                ));
+
+        ResourceSnippetParameters resource = ResourceSnippetParameters.builder()
+                .tag("질문 게시판/AI")
+                .summary("질문 페이지 조회 API")
+                .description("질문 게시판 페이지 조회 API")
+                .requestHeaders(headerWithName("Authorization")
+                        .description("Swagger 요청시 해당 입력칸이 아닌 우측 상단 자물쇠 또는 Authorize 버튼을 이용해 토큰을 넣어주세요"))
+                .queryParameters(
+                        parameterWithName("qnaBoardId").description("조회할 게시글 Id"))
+                .responseFields(
+                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(STRING).description("상태 메시지"),
+                        fieldWithPath("data.qnaBoardId").type(NUMBER).description("QnA 게시판 ID"),
+                        fieldWithPath("data.question").type(STRING).description("질문"),
+                        fieldWithPath("data.answer").type(STRING).description("답변"),
+                        fieldWithPath("data.links").type(ARRAY).description("링크 목록"),
+                        fieldWithPath("data.links[].insuranceCompany").type(STRING).description("보험 회사 이름"),
+                        fieldWithPath("data.links[].insuranceLink").type(STRING).description("보험 링크"))
+                .build();
+
+
+        RestDocumentationResultHandler document = documentHandler("read-question", prettyPrint(), resource);
+
+        // when // then
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/question/detail")
+                        .header("Authorization", "Bearer AccessToken")
+                        .param("qnaBoardId", "148"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document);
