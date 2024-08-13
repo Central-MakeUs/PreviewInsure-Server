@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static cmc15.backend.global.Result.NOT_FOUND_QNA_BOARD;
 import static cmc15.backend.global.Result.NOT_FOUND_USER;
 
 @Service
@@ -110,19 +111,7 @@ public class QnaBoardService {
         if (insuranceType != null) {
             Page<QnaBoard> qnaBoardPage = qnaBoardRepository.findByInsuranceTypeAndIsShare(insuranceType, paging, true);
             return qnaBoardPage.map(qnaBoard -> {
-                String recommendLinks = qnaBoard.getRecommendLinks();
-                List<QnaBoardResponse.Link> links = new ArrayList<>();
-
-                if (recommendLinks != null && !recommendLinks.equals("")) {
-                    String[] split = recommendLinks.split("\\|");
-                    for (String s : split) {
-                        String[] split1 = s.split("&");
-                        String insuranceCompany = split1[0];
-                        String insuranceLink = split1[1];
-                        QnaBoardResponse.Link link = QnaBoardResponse.Link.to(insuranceCompany, insuranceLink);
-                        links.add(link);
-                    }
-                }
+                List<QnaBoardResponse.Link> links = parseLinks(qnaBoard);
 
                 return QnaBoardResponse.ReadQuestion.to(qnaBoard, links);
             });
@@ -130,21 +119,38 @@ public class QnaBoardService {
 
         Page<QnaBoard> qnaBoardPage = qnaBoardRepository.findAll(paging);
         return qnaBoardPage.map(qnaBoard -> {
-            String recommendLinks = qnaBoard.getRecommendLinks();
-            List<QnaBoardResponse.Link> links = new ArrayList<>();
-
-            if (recommendLinks != null && !recommendLinks.equals("")) {
-                String[] split = recommendLinks.split("\\|");
-                for (String s : split) {
-                    String[] split1 = s.split("&");
-                    String insuranceCompany = split1[0];
-                    String insuranceLink = split1[1];
-                    QnaBoardResponse.Link link = QnaBoardResponse.Link.to(insuranceCompany, insuranceLink);
-                    links.add(link);
-                }
-            }
+            List<QnaBoardResponse.Link> links = parseLinks(qnaBoard);
 
             return QnaBoardResponse.ReadQuestion.to(qnaBoard, links);
         });
+    }
+
+    /**
+     * @return QnaBoardResponse.ReadQuestion
+     * @apiNote 질문 게시판 상세 조회 API
+     */
+    public QnaBoardResponse.ReadQuestion readQuestion(final Long accountId, final Long qnaBoardId) {
+        QnaBoard qnaBoard = qnaBoardRepository.findById(qnaBoardId).orElseThrow(() -> new CustomException(NOT_FOUND_QNA_BOARD));
+
+        List<QnaBoardResponse.Link> links = parseLinks(qnaBoard);
+        return QnaBoardResponse.ReadQuestion.to(qnaBoard, links);
+    }
+
+    private static List<QnaBoardResponse.Link> parseLinks(QnaBoard qnaBoard) {
+        String recommendLinks = qnaBoard.getRecommendLinks();
+        List<QnaBoardResponse.Link> links = new ArrayList<>();
+
+        if (recommendLinks != null && !recommendLinks.equals("")) {
+            String[] split = recommendLinks.split("\\|");
+            for (String s : split) {
+                String[] split1 = s.split("&");
+                String insuranceCompany = split1[0];
+                String insuranceLink = split1[1];
+                QnaBoardResponse.Link link = QnaBoardResponse.Link.to(insuranceCompany, insuranceLink);
+                links.add(link);
+            }
+        }
+
+        return links;
     }
 }

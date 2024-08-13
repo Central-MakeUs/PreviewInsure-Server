@@ -49,11 +49,11 @@ public class QnaBoardController {
     // TODO: 8/3/24 QnA 게시판 구현 필요
 
     /**
-     * @apiNote Qna 게시판 페이지 조회 API
      * @param accountId
      * @param page
      * @param insuranceType
      * @return
+     * @apiNote Qna 게시판 페이지 조회 API
      */
     @GetMapping("/questions")
     public CustomResponseEntity<Page<QnaBoardResponse.ReadQuestion>> readQuestions(
@@ -62,5 +62,19 @@ public class QnaBoardController {
             @RequestParam(required = false) final InsuranceType insuranceType
     ) {
         return CustomResponseEntity.success(qnaBoardService.readQuestions(accountId, page, insuranceType));
+    }
+
+    /**
+     * @apiNote 질문 게시판 상세 조회 API
+     * @param accountId
+     * @param qnaBoardId
+     * @return
+     */
+    @GetMapping("/question/detail")
+    public CustomResponseEntity<QnaBoardResponse.ReadQuestion> readQuestion(
+            @AuthenticationPrincipal final Long accountId,
+            @RequestParam final Long qnaBoardId
+    ) {
+        return CustomResponseEntity.success(qnaBoardService.readQuestion(accountId, qnaBoardId));
     }
 }

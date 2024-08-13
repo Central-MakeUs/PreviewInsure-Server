@@ -20,7 +20,8 @@ public enum Result {
     // 질문게시판 관련
     NOT_EMPTY_MESSAGE(-2001, "질문은 비어있을 수 없습니다."),
     MESSAGE_SIZE_ERROR(-2002, "질문은 최소 4글자 이상, 최대 300 글자 이하입니다."),
-    USE_BANNED_WORD(-2003, "질문에 욕설을 사용할 수 없습니다.");
+    USE_BANNED_WORD(-2003, "질문에 욕설을 사용할 수 없습니다."),
+    NOT_FOUND_QNA_BOARD(-2003, "게시글을 찾을 수 없습니다.");
 
     private final int code;
     private final String message;
