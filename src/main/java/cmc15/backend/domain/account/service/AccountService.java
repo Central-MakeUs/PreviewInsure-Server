@@ -186,4 +186,15 @@ public class AccountService {
         return AccountResponse.OAuthConnection.to(account, optionalAccount.isPresent(), atk, rtk);
 
     }
+
+    /**
+     * @apiNote 내가 가입한 보험 조회 API
+     * @return List<AccountResponse.Insurances>
+     */
+    public List<AccountResponse.Insurances> readAccountInsurances(Long accountId) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
+        List<AccountInsurance> accountInsurances = accountInsuranceRepository.findByAccount(account);
+
+        return accountInsurances.stream().map(AccountResponse.Insurances::to).toList();
+    }
 }
