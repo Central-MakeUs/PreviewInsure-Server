@@ -83,4 +83,16 @@ class AccountControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @DisplayName("내가 가입한 보험 리스트 조회 API")
+    @Test
+    void 내가_가입한_보험_리스트_조회_API() throws Exception {
+        // given
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/account/insurances")
+                        .header("Authorization", "Bearer AccessToken"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }

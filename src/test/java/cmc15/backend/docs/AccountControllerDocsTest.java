@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -181,5 +183,40 @@ public class AccountControllerDocsTest extends RestDocsSupport {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document);
+    }
+
+    @DisplayName("내가 가입한 보험 리스트 조회 API")
+    @Test
+    void 내가_가입한_보험_리스트_조회_API() throws Exception {
+        // given
+        given(accountService.readAccountInsurances(any()))
+                .willReturn(List.of(
+                        new AccountResponse.Insurances(1L, InsuranceType.CI, "하나손해보험"),
+                        new AccountResponse.Insurances(2L, InsuranceType.SI, "하나손해보험"),
+                        new AccountResponse.Insurances(3L, InsuranceType.PA, "하나손해보험"),
+                        new AccountResponse.Insurances(4L, InsuranceType.ED, "하나손해보험")
+                ));
+
+        ResourceSnippetParameters resource = ResourceSnippetParameters.builder()
+                .tag("계정")
+                .summary("내가 가입한 보험 리스트 조회 API")
+                .description("")
+                .requestHeaders(headerWithName("Authorization")
+                        .description("Swagger 요청시 해당 입력칸이 아닌 우측 상단 자물쇠 또는 Authorize 버튼을 이용해 토큰을 넣어주세요"))
+                .responseFields(
+                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(STRING).description("상태 메시지"),
+                        fieldWithPath("data[].accountInsuranceId").type(NUMBER).description("내 보험 ID"),
+                        fieldWithPath("data[].insuranceType").type(STRING).description("내 보험 유형"),
+                        fieldWithPath("data[].insuranceCompany").type(STRING).description("내 보험 회사"))
+                .build();
+
+        documentHandler("read-account-insurances", prettyPrint(), resource);
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/account/insurances")
+                        .header("Authorization", "Bearer AccessToken"))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }
