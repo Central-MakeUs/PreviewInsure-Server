@@ -15,6 +15,7 @@ import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +48,7 @@ import static cmc15.backend.global.Result.NOT_MATCHED_PLATFORM;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class AccountService {
 
     private final RestTemplate restTemplate;
@@ -265,6 +267,7 @@ public class AccountService {
         else
             url = "https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk + "&nickname=" + account.getNickName();
 
+        log.info(url);
         return url;
     }
 
