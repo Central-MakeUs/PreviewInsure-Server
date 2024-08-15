@@ -245,6 +245,7 @@ public class AccountService {
                 accountRepository.save(Account.builder()
                         .email(appleIdTokenPayload.getEmail())
                         .password("$2a$10$7NPHBBkAuyWG/lJz6Yv8/.n099SecuAwWkQq4DMkxeVKWl/R7o5.2")
+                        .appleAccount(appleIdTokenPayload.getSub())
                         .authority(ROLE_USER)
                         .build())
         );

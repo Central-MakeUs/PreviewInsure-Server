@@ -5,7 +5,6 @@ import cmc15.backend.domain.account.request.AccountRequest;
 import cmc15.backend.domain.account.response.AccountResponse;
 import cmc15.backend.domain.account.service.AccountService;
 import cmc15.backend.global.CustomResponseEntity;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,16 +17,6 @@ import java.util.List;
 @RequestMapping("/api")
 public class AccountController {
     private final AccountService accountService;
-
-    /**
-     * @apiNote 애플 로그인 API
-     * @param request
-     * @return AccountResponse.OAuthConnection
-     */
-    @PostMapping("/apple/token")
-    public CustomResponseEntity<AccountResponse.OAuthConnection> appleLogin(HttpServletRequest request) {
-        return CustomResponseEntity.success(accountService.getAppleInfo(request.getParameter("code")));
-    }
 
     /**
      * @param code
