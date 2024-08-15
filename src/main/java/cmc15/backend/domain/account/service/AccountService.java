@@ -235,6 +235,12 @@ public class AccountService {
         return accountInsurances.stream().map(AccountResponse.Insurances::to).toList();
     }
 
+    /**
+     * @apiNote 애플 로그인 API
+     * @param request
+     * @return AccountResponse.OAuthConnection
+     */
+    @Transactional
     public AccountResponse.OAuthConnection getAppleInfo(String code) {
         AppleSocialTokenInfoResponse response = getIdToken(clientId, generateClientSecret(), "authorization_code", code);
         String idToken = response.getIdToken();
