@@ -33,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.time.LocalDate;
@@ -42,8 +44,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 import static cmc15.backend.domain.account.entity.Authority.ROLE_USER;
-import static cmc15.backend.global.Result.NOT_FOUND_USER;
-import static cmc15.backend.global.Result.NOT_MATCHED_PLATFORM;
+import static cmc15.backend.global.Result.*;
 
 @Service
 @RequiredArgsConstructor
@@ -262,10 +263,16 @@ public class AccountService {
         String rtk = tokenProvider.createRefreshToken(account.getEmail());
 
         String url;
-        if (optionalAccount.isPresent())
-            url = "https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk + "&nickname=" + account.getNickName();
-        else
+        if (optionalAccount.isPresent()) {
+            try {
+                String encodedNickname = URLEncoder.encode(account.getNickName(), "UTF-8");
+                url = "https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk + "&nickname=" + encodedNickname;
+            } catch (UnsupportedEncodingException e) {
+                throw new CustomException(FAIL);
+            }
+        } else {
             url = "https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk + "&nickname=null";
+        }
 
         log.info(url);
         return url;
