@@ -263,9 +263,9 @@ public class AccountService {
 
         String url;
         if (optionalAccount.isPresent())
-            url = "https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk;
-        else
             url = "https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk + "&nickname=" + account.getNickName();
+        else
+            url = "https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk + "&nickname=null";
 
         log.info(url);
         return url;

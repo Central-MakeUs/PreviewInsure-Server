@@ -28,6 +28,9 @@ public class CorsConfig {
         config.addAllowedOrigin("https://29da-39-117-125-106.ngrok-free.app");
         config.addAllowedOrigin("https://appleid.apple.com");
         config.addAllowedOrigin("https://appleid.apple.com/");
+        config.addAllowedOrigin("https://previewinsure.vercel.app/");
+        config.addAllowedOrigin("https://previewinsure.vercel.app");
+
 
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
