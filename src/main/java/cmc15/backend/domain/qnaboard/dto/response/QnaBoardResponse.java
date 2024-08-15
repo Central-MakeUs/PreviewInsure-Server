@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 import static lombok.AccessLevel.PRIVATE;
 
 public class QnaBoardResponse {
@@ -22,16 +20,14 @@ public class QnaBoardResponse {
         private String answer;
         private Boolean isShare;
         private String insuranceType;
-        private List<Link> links;
 
-        public static Input to(final QnaBoard qnaBoard, final List<Link> links) {
+        public static Input to(final QnaBoard qnaBoard) {
             return Input.builder()
                     .qnaBoardId(qnaBoard.getQnaBoardId())
                     .quesion(qnaBoard.getQuesion())
                     .answer(qnaBoard.getAnswer())
                     .isShare(qnaBoard.getIsShare())
                     .insuranceType(qnaBoard.getInsuranceType().getTypeContent())
-                    .links(links)
                     .build();
         }
     }
@@ -78,14 +74,12 @@ public class QnaBoardResponse {
         private Long qnaBoardId;
         private String question;
         private String answer;
-        private List<Link> links;
 
-        public static ReadQuestion to(QnaBoard qnaBoard, List<Link> links) {
+        public static ReadQuestion to(QnaBoard qnaBoard) {
             return ReadQuestion.builder()
                     .qnaBoardId(qnaBoard.getQnaBoardId())
                     .question(qnaBoard.getQuesion())
                     .answer(qnaBoard.getAnswer())
-                    .links(links)
                     .build();
         }
     }
