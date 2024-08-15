@@ -219,4 +219,35 @@ public class AccountControllerDocsTest extends RestDocsSupport {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @DisplayName("닉네임 업데이트 API")
+    @Test
+    void 닉네임_업데이트_API() throws Exception {
+        // given
+        AccountRequest.Nickname request = new AccountRequest.Nickname("불편한 코끼리");
+
+        ResourceSnippetParameters resource = ResourceSnippetParameters.builder()
+                .tag("계정")
+                .summary("닉네임 업데이트 API")
+                .description("")
+                .requestHeaders(headerWithName("Authorization")
+                        .description("Swagger 요청시 해당 입력칸이 아닌 우측 상단 자물쇠 또는 Authorize 버튼을 이용해 토큰을 넣어주세요"))
+                .requestFields(
+                        fieldWithPath("nickname").type(STRING).description("변경할 닉네임"))
+                .responseFields(
+                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(STRING).description("상태 메시지"))
+                .build();
+
+        RestDocumentationResultHandler document = documentHandler("update-nickname", prettyPrint(), prettyPrint(), resource);
+
+        // when // then
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/register/nickname")
+                        .header("Authorization", "Bearer AccessToken")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document);
+    }
 }

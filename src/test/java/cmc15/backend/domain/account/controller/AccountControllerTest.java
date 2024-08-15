@@ -95,4 +95,19 @@ class AccountControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @DisplayName("닉네임 업데이트 API")
+    @Test
+    void 닉네임_업데이트_API() throws Exception {
+        // given
+        AccountRequest.Nickname request = new AccountRequest.Nickname("불편한 코끼리");
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/register/nickname")
+                        .header("Authorization", "Bearer AccessToken")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }
