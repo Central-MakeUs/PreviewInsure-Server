@@ -236,12 +236,12 @@ public class AccountService {
     }
 
     /**
-     * @apiNote 애플 로그인 API
      * @param request
      * @return AccountResponse.OAuthConnection
+     * @apiNote 애플 로그인 API
      */
     @Transactional
-    public AccountResponse.OAuthConnection getAppleInfo(String code) {
+    public String appleLogin(String code) {
         AppleSocialTokenInfoResponse response = getIdToken(clientId, generateClientSecret(), "authorization_code", code);
         String idToken = response.getIdToken();
         AppleIdTokenPayload appleIdTokenPayload = TokenDecoder.decodePayload(idToken, AppleIdTokenPayload.class);
@@ -259,7 +259,13 @@ public class AccountService {
         String atk = tokenProvider.createAccessToken(account.getAccountId(), getAuthentication(account.getEmail(), "abc123"));
         String rtk = tokenProvider.createRefreshToken(account.getEmail());
 
-        return AccountResponse.OAuthConnection.to(account, optionalAccount.isPresent(), atk, rtk);
+        String url;
+        if (optionalAccount.isPresent())
+            url = "https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk;
+        else
+            url = "https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk + "&nickname=" + account.getNickName();
+
+        return url;
     }
 
     public AppleSocialTokenInfoResponse getIdToken(String clientId, String clientSecret, String grantType, String code) {
