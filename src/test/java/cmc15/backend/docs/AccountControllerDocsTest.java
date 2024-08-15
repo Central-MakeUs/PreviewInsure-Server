@@ -250,4 +250,29 @@ public class AccountControllerDocsTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andDo(document);
     }
+
+    @DisplayName("탈퇴하기 API")
+    @Test
+    void 회원탈퇴_API() throws Exception {
+        // given
+        ResourceSnippetParameters resource = ResourceSnippetParameters.builder()
+                .tag("계정")
+                .summary("회원탈퇴 API")
+                .description("탈퇴하기 API")
+                .requestHeaders(headerWithName("Authorization")
+                        .description("Swagger 요청시 해당 입력칸이 아닌 우측 상단 자물쇠 또는 Authorize 버튼을 이용해 토큰을 넣어주세요"))
+                .responseFields(
+                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(STRING).description("상태 메시지"))
+                .build();
+
+        RestDocumentationResultHandler document = documentHandler("delete-account", prettyPrint(), prettyPrint(), resource);
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/account")
+                        .header("Authorization", "Bearer AccessToken"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document);
+    }
 }

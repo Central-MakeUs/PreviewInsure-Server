@@ -110,4 +110,16 @@ class AccountControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @DisplayName("탈퇴하기 API")
+    @Test
+    void 회원탈퇴_API() throws Exception {
+        // given
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/account")
+                        .header("Authorization", "Bearer AccessToken"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }
