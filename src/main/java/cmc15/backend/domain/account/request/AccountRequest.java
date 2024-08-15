@@ -55,4 +55,12 @@ public class AccountRequest {
             private String insuranceCompany;
         }
     }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class Nickname {
+        @NotNull(message = "닉네임은 필수 값 입니다.")
+        private String nickname;
+    }
 }

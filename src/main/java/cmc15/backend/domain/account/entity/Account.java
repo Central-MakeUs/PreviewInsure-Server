@@ -60,4 +60,8 @@ public class Account {
     public void updateGender(String gender) {
         this.gender = gender;
     }
+
+    public void updateNickname(String nickname) {
+        this.nickName = nickname;
+    }
 }

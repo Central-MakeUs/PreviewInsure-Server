@@ -338,4 +338,17 @@ public class AccountService {
         }
 
     }
+
+    /**
+     * @param accountId
+     * @param request
+     * @return Void
+     * @apiNote 닉네임 업데이트 API
+     */
+    @Transactional
+    public Void updateNickname(Long accountId, final AccountRequest.Nickname request) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
+        account.updateNickname(request.getNickname());
+        return null;
+    }
 }

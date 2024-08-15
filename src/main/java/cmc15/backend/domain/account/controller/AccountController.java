@@ -51,6 +51,20 @@ public class AccountController {
     }
 
     /**
+     * @apiNote 닉네임 업데이트 API
+     * @param accountId
+     * @param request
+     * @return Void
+     */
+    @PatchMapping("register/nickname")
+    public CustomResponseEntity<Void> updateNickname(
+            @AuthenticationPrincipal final Long accountId,
+            @RequestBody @Valid final AccountRequest.Nickname request
+    ) {
+        return CustomResponseEntity.success(accountService.updateNickname(accountId, request));
+    }
+
+    /**
      * @param accountId
      * @param request
      * @return void
