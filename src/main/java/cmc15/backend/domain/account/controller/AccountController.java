@@ -51,10 +51,10 @@ public class AccountController {
     }
 
     /**
-     * @apiNote 닉네임 업데이트 API
      * @param accountId
      * @param request
      * @return Void
+     * @apiNote 닉네임 업데이트 API
      */
     @PatchMapping("register/nickname")
     public CustomResponseEntity<Void> updateNickname(
@@ -86,7 +86,7 @@ public class AccountController {
      */
     @PatchMapping("/register/board")
     public CustomResponseEntity<Void> updateInsureBoarding(
-            @AuthenticationPrincipal Long accountId,
+            @AuthenticationPrincipal final Long accountId,
             @RequestBody @Valid final AccountRequest.InsureBoarding request
     ) {
         return CustomResponseEntity.success(accountService.updateInsureBoarding(accountId, request));
@@ -99,8 +99,20 @@ public class AccountController {
      */
     @GetMapping("/account/insurances")
     public CustomResponseEntity<List<AccountResponse.Insurances>> readAccountInsurances(
-            @AuthenticationPrincipal Long accountId
+            @AuthenticationPrincipal final Long accountId
     ) {
         return CustomResponseEntity.success(accountService.readAccountInsurances(accountId));
+    }
+
+    /**
+     * @apiNote 회원탈퇴 API
+     * @param accountId
+     * @return
+     */
+    @DeleteMapping("/account")
+    public CustomResponseEntity<Void> deleteAccount(
+            @AuthenticationPrincipal final Long accountId
+    ) {
+        return CustomResponseEntity.success(accountService.deleteAccount(accountId));
     }
 }

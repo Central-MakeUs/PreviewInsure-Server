@@ -1,6 +1,5 @@
 package cmc15.backend.domain.qnaboard.controller;
 
-import cmc15.backend.domain.account.entity.InsuranceType;
 import cmc15.backend.domain.qnaboard.dto.request.QnaBoardRequest;
 import cmc15.backend.domain.qnaboard.dto.response.QnaBoardResponse;
 import cmc15.backend.domain.qnaboard.service.QnaBoardService;
@@ -59,7 +58,7 @@ public class QnaBoardController {
     public CustomResponseEntity<Page<QnaBoardResponse.ReadQuestion>> readQuestions(
             @AuthenticationPrincipal final Long accountId,
             @RequestParam final Integer page,
-            @RequestParam(required = false) final InsuranceType insuranceType
+            @RequestParam(required = false) final String insuranceType
     ) {
         return CustomResponseEntity.success(qnaBoardService.readQuestions(accountId, page, insuranceType));
     }

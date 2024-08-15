@@ -351,4 +351,15 @@ public class AccountService {
         account.updateNickname(request.getNickname());
         return null;
     }
+
+    /**
+     * @param accountId
+     * @return
+     * @apiNote 회원탈퇴 API
+     */
+    @Transactional
+    public Void deleteAccount(Long accountId) {
+        accountRepository.deleteById(accountId);
+        return null;
+    }
 }

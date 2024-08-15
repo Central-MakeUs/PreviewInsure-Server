@@ -7,7 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -18,6 +21,8 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor
 @Builder
 @Getter
+@Where(clause = "delete_at IS NULL")
+@SQLDelete(sql = "UPDATE account SET delete_at = CURRENT_TIMESTAMP where account_id = ?")
 public class Account {
 
     @Id
@@ -41,6 +46,8 @@ public class Account {
     private Authority authority;
 
     private String appleAccount;
+
+    private LocalDateTime deleteAt;
 
     @OneToMany(mappedBy = "account")
     private Collection<QnaBoard> qnaBoard;
