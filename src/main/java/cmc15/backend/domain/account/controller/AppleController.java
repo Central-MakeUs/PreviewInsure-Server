@@ -16,6 +16,7 @@ public class AppleController {
 
     @PostMapping("/apple/token")
     public ResponseEntity<MsgEntity> callback(HttpServletRequest request) {
+        System.out.println(request.getParameter("code"));
         AppleIdTokenPayload appleInfo = accountService.getAppleInfo(request.getParameter("code"));
         System.out.println(appleInfo.getEmail());
         return ResponseEntity.ok()

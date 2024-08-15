@@ -18,6 +18,10 @@ import lombok.RequiredArgsConstructor;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -25,6 +29,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.security.PrivateKey;
 import java.security.Security;
@@ -43,10 +49,10 @@ import static cmc15.backend.global.Result.NOT_MATCHED_PLATFORM;
 @Transactional(readOnly = true)
 public class AccountService {
 
+    private final RestTemplate restTemplate;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final AccountServiceValidator accountServiceValidator;
-    private final AppleAuthClient appleAuthClient;
     private final AccountRepository accountRepository;
     private final AccountInsuranceRepository accountInsuranceRepository;
     private final PasswordEncoder passwordEncoder;
@@ -236,15 +242,41 @@ public class AccountService {
                 + "&response_type=code%20id_token&scope=name%20email&response_mode=form_post";
     }
 
-    public AppleIdTokenPayload getAppleInfo(String code){
-        String idToken = appleAuthClient.getIdToken(
-                clientId,
-                generateClientSecret(),
-                "authorization_code",
-                code
-        ).getIdToken();
+    public AppleIdTokenPayload getAppleInfo(String code) {
+        AppleSocialTokenInfoResponse response = getIdToken(clientId, generateClientSecret(), "authorization_code", code);
+        String idToken = response.getIdToken();
 
         return TokenDecoder.decodePayload(idToken, AppleIdTokenPayload.class);
+    }
+
+    public AppleSocialTokenInfoResponse getIdToken(String clientId, String clientSecret, String grantType, String code) {
+        // URL 생성
+        String url = "https://appleid.apple.com/auth/token";
+
+        // 요청 파라미터 설정
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("client_id", clientId)
+                .queryParam("client_secret", clientSecret)
+                .queryParam("grant_type", grantType)
+                .queryParam("code", code);
+
+        // HTTP 헤더 설정 (필요시 추가)
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/x-www-form-urlencoded");
+
+        // 요청 엔터티 생성
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        // POST 요청 수행
+        ResponseEntity<AppleSocialTokenInfoResponse> response = restTemplate.exchange(
+                uriBuilder.toUriString(),
+                HttpMethod.POST,
+                entity,
+                AppleSocialTokenInfoResponse.class
+        );
+
+        // 응답 반환
+        return response.getBody();
     }
 
     private String generateClientSecret() {
