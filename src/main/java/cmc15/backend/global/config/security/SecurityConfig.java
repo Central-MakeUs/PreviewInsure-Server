@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((request) -> request
                         .requestMatchers(
                                 "/api/health", "/api/account", "/docs/*", "/api/register/nickname","/api/oauth",
-                                "/api/apple"
+                                "/api/apple","/apple/token"
                                 )
                         .permitAll())
                 .authorizeHttpRequests(request -> request.anyRequest().authenticated())
