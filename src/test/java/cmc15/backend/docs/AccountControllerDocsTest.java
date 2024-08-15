@@ -269,7 +269,7 @@ public class AccountControllerDocsTest extends RestDocsSupport {
         RestDocumentationResultHandler document = documentHandler("delete-account", prettyPrint(), prettyPrint(), resource);
 
         // when // then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/account")
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/account")
                         .header("Authorization", "Bearer AccessToken"))
                 .andDo(print())
                 .andExpect(status().isOk())
