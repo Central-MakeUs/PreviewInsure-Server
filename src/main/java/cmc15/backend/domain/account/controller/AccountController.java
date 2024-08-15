@@ -5,11 +5,13 @@ import cmc15.backend.domain.account.request.AccountRequest;
 import cmc15.backend.domain.account.response.AccountResponse;
 import cmc15.backend.domain.account.service.AccountService;
 import cmc15.backend.global.CustomResponseEntity;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -17,6 +19,13 @@ import java.util.List;
 @RequestMapping("/api")
 public class AccountController {
     private final AccountService accountService;
+
+    @GetMapping("/apple")
+    public void login(HttpServletResponse response) throws IOException {
+        String appleLogin = accountService.getAppleLogin();
+        System.out.println(appleLogin);
+        response.sendRedirect(appleLogin);
+    }
 
     /**
      * @param code
@@ -79,9 +88,9 @@ public class AccountController {
     }
 
     /**
-     * @apiNote 내가 가입한 보험 조회 API
      * @param accountId
      * @return
+     * @apiNote 내가 가입한 보험 조회 API
      */
     @GetMapping("/account/insurances")
     public CustomResponseEntity<List<AccountResponse.Insurances>> readAccountInsurances(

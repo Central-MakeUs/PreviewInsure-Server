@@ -44,7 +44,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((request) -> request
                         .requestMatchers(
-                                "/api/health", "/api/account", "/docs/*", "/api/register/nickname","/api/oauth")
+                                "/api/health", "/api/account", "/docs/*", "/api/register/nickname","/api/oauth",
+                                "/api/apple"
+                                )
                         .permitAll())
                 .authorizeHttpRequests(request -> request.anyRequest().authenticated())
                 .addFilterBefore(new JwtFilter(tokenProvider, redisDao), UsernamePasswordAuthenticationFilter.class);

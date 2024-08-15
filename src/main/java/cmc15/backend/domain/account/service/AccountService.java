@@ -48,6 +48,15 @@ public class AccountService {
     @Value("${nickname.word2}")
     private String namesPart2;
 
+    @Value("${apple.auth-url}")
+    private String appleAuthUrl;
+
+    @Value("${apple.client-id}")
+    private String clientId;
+
+    @Value("${apple.redirect-url}")
+    private String redirectUri;
+
     public static final int FIX_AGE_DAY = 1;
 
     /**
@@ -188,8 +197,8 @@ public class AccountService {
     }
 
     /**
-     * @apiNote 내가 가입한 보험 조회 API
      * @return List<AccountResponse.Insurances>
+     * @apiNote 내가 가입한 보험 조회 API
      */
     public List<AccountResponse.Insurances> readAccountInsurances(Long accountId) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
@@ -197,4 +206,12 @@ public class AccountService {
 
         return accountInsurances.stream().map(AccountResponse.Insurances::to).toList();
     }
+
+    public String getAppleLogin() {
+        return appleAuthUrl + "/auth/authorize"
+                + "?client_id=" + clientId
+                + "&redirect_uri=" + redirectUri
+                + "&response_type=code%20id_token&scope=name%20email&response_mode=form_post";
+    }
+
 }
