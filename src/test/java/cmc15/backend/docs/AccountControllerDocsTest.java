@@ -242,7 +242,7 @@ public class AccountControllerDocsTest extends RestDocsSupport {
         RestDocumentationResultHandler document = documentHandler("update-nickname", prettyPrint(), prettyPrint(), resource);
 
         // when // then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/register/nickname")
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/register/nickname")
                         .header("Authorization", "Bearer AccessToken")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON))

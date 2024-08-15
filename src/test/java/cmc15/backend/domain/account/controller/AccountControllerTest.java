@@ -103,7 +103,7 @@ class AccountControllerTest extends ControllerTestSupport {
         AccountRequest.Nickname request = new AccountRequest.Nickname("불편한 코끼리");
 
         // when // then
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/register/nickname")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/register/nickname")
                         .header("Authorization", "Bearer AccessToken")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON))
