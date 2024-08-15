@@ -40,6 +40,8 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
+    private String appleAccount;
+
     @OneToMany(mappedBy = "account")
     private Collection<QnaBoard> qnaBoard;
 

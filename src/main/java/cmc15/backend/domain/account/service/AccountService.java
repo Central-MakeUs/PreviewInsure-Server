@@ -235,18 +235,24 @@ public class AccountService {
         return accountInsurances.stream().map(AccountResponse.Insurances::to).toList();
     }
 
-    public String getAppleLogin() {
-        return appleAuthUrl + "/auth/authorize"
-                + "?client_id=" + clientId
-                + "&redirect_uri=" + redirectUri
-                + "&response_type=code%20id_token&scope=name%20email&response_mode=form_post";
-    }
-
-    public AppleIdTokenPayload getAppleInfo(String code) {
+    public AccountResponse.OAuthConnection getAppleInfo(String code) {
         AppleSocialTokenInfoResponse response = getIdToken(clientId, generateClientSecret(), "authorization_code", code);
         String idToken = response.getIdToken();
+        AppleIdTokenPayload appleIdTokenPayload = TokenDecoder.decodePayload(idToken, AppleIdTokenPayload.class);
 
-        return TokenDecoder.decodePayload(idToken, AppleIdTokenPayload.class);
+        Optional<Account> optionalAccount = accountRepository.findByAppleAccount(appleIdTokenPayload.getSub());
+        Account account = optionalAccount.orElseGet(() ->
+                accountRepository.save(Account.builder()
+                        .email(appleIdTokenPayload.getEmail())
+                        .password("$2a$10$7NPHBBkAuyWG/lJz6Yv8/.n099SecuAwWkQq4DMkxeVKWl/R7o5.2")
+                        .authority(ROLE_USER)
+                        .build())
+        );
+
+        String atk = tokenProvider.createAccessToken(account.getAccountId(), getAuthentication(account.getEmail(), "abc123"));
+        String rtk = tokenProvider.createRefreshToken(account.getEmail());
+
+        return AccountResponse.OAuthConnection.to(account, optionalAccount.isPresent(), atk, rtk);
     }
 
     public AppleSocialTokenInfoResponse getIdToken(String clientId, String clientSecret, String grantType, String code) {
