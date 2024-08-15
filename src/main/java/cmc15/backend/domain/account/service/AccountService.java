@@ -34,7 +34,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.time.LocalDate;
@@ -44,7 +43,10 @@ import java.time.ZoneId;
 import java.util.*;
 
 import static cmc15.backend.domain.account.entity.Authority.ROLE_USER;
-import static cmc15.backend.global.Result.*;
+import static cmc15.backend.global.Result.NOT_FOUND_USER;
+import static cmc15.backend.global.Result.NOT_MATCHED_PLATFORM;
+import static java.net.URLEncoder.encode;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Service
 @RequiredArgsConstructor
@@ -73,20 +75,17 @@ public class AccountService {
     @Value("${apple.client-id}")
     private String clientId;
 
-    @Value("${apple.redirect-url}")
-    private String redirectUri;
-
     @Value("${apple.key-id}")
     private String keyId;
-
-    @Value("${apple.key-path}")
-    private String keyPath;
 
     @Value("${apple.team-id}")
     private String teamId;
 
     @Value("${apple.private-key}")
     private String privateKey;
+
+    @Value("${apple.redirect-success}")
+    private String redirectUrl;
 
     public static final int FIX_AGE_DAY = 1;
 
@@ -244,7 +243,7 @@ public class AccountService {
      * @apiNote 애플 로그인 API
      */
     @Transactional
-    public String appleLogin(String code) {
+    public String appleLogin(String code) throws UnsupportedEncodingException {
         AppleSocialTokenInfoResponse response = getIdToken(clientId, generateClientSecret(), "authorization_code", code);
         String idToken = response.getIdToken();
         AppleIdTokenPayload appleIdTokenPayload = TokenDecoder.decodePayload(idToken, AppleIdTokenPayload.class);
@@ -262,20 +261,16 @@ public class AccountService {
         String atk = tokenProvider.createAccessToken(account.getAccountId(), getAuthentication(account.getEmail(), "abc123"));
         String rtk = tokenProvider.createRefreshToken(account.getEmail());
 
-        String url;
         if (optionalAccount.isPresent()) {
-            try {
-                String encodedNickname = URLEncoder.encode(account.getNickName(), "UTF-8");
-                url = "https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk + "&nickname=" + encodedNickname;
-            } catch (UnsupportedEncodingException e) {
-                throw new CustomException(FAIL);
+            // 회원가입은 했는데 닉네임이 null 인 경우
+            if (account.getNickName() == null) {
+                return redirectUrl + atk + "&nickname=none";
             }
+            return redirectUrl + atk + "&nickname=" + encode(account.getNickName(), UTF_8);
         } else {
-            url = "https://preview-insure-web-git-dev-sehuns-projects.vercel.app/callback/apple?token=" + atk + "&nickname=null";
+            return redirectUrl + atk + "&nickname=null";
         }
 
-        log.info(url);
-        return url;
     }
 
     public AppleSocialTokenInfoResponse getIdToken(String clientId, String clientSecret, String grantType, String code) {
