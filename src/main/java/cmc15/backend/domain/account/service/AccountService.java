@@ -357,4 +357,9 @@ public class AccountService {
         accountRepository.deleteById(accountId);
         return null;
     }
+
+    public AccountResponse.Detail readAccount(Long accountId) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
+        return AccountResponse.Detail.to(account);
+    }
 }

@@ -94,4 +94,33 @@ public class AccountResponse {
                     .build();
         }
     }
+
+    @AllArgsConstructor
+    @NoArgsConstructor(access = PRIVATE)
+    @Getter
+    @Builder
+    public static class Detail {
+        private Long accountId;
+        private String email;
+        private String age;
+        private String gender;
+
+        public static AccountResponse.Detail to(Account account) {
+            String age = "-";
+            if (account.getAge() != null) {
+                age = String.valueOf(account.getAge());
+            }
+
+            String gender = "선택안함";
+            if (account.getGender() != null) {
+                gender = account.getGender();
+            }
+            return Detail.builder()
+                    .accountId(account.getAccountId())
+                    .email(account.getEmail())
+                    .age(age)
+                    .gender(gender)
+                    .build();
+        }
+    }
 }

@@ -115,4 +115,16 @@ public class AccountController {
     ) {
         return CustomResponseEntity.success(accountService.deleteAccount(accountId));
     }
+
+    /**
+     * 내 정보 조회 API
+     * @param accountId
+     * @return AccountResponse.Detail
+     */
+    @GetMapping("/account")
+    public CustomResponseEntity<AccountResponse.Detail> readAccount(
+            @AuthenticationPrincipal final Long accountId
+    ) {
+        return CustomResponseEntity.success(accountService.readAccount(accountId));
+    }
 }

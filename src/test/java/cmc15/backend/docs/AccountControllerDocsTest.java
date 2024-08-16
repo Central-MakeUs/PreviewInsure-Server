@@ -275,4 +275,41 @@ public class AccountControllerDocsTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andDo(document);
     }
+
+    @DisplayName("내 정보 조회 API")
+    @Test
+    void 내_정보_조회_API() throws Exception {
+        // given
+        given(accountService.readAccount(any()))
+                .willReturn(AccountResponse.Detail.builder()
+                        .accountId(1L)
+                        .email("previewInsure@gmail.com")
+                        .age("25")
+                        .gender("선택안")
+                        .build());
+
+        ResourceSnippetParameters resource = ResourceSnippetParameters.builder()
+                .tag("계정")
+                .summary("내 정보 조회 API")
+                .description("내 정보 조회 API")
+                .requestHeaders(headerWithName("Authorization")
+                        .description("Swagger 요청시 해당 입력칸이 아닌 우측 상단 자물쇠 또는 Authorize 버튼을 이용해 토큰을 넣어주세요"))
+                .responseFields(
+                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(STRING).description("상태 메시지"),
+                        fieldWithPath("data.accountId").type(NUMBER).description("계정 ID"),
+                        fieldWithPath("data.email").type(STRING).description("계정 이메일"),
+                        fieldWithPath("data.age").type(STRING).description("나이 / null인 경우 '-'"),
+                        fieldWithPath("data.gender").type(STRING).description("성별 / null인 경우 '선택안함'"))
+                .build();
+
+        RestDocumentationResultHandler document = documentHandler("read-account", prettyPrint(), prettyPrint(), resource);
+
+        // when // then
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/account")
+                        .header("Authorization", "Bearer AccessToken"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document);
+    }
 }
