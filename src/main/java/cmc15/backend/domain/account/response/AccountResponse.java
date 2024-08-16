@@ -21,13 +21,22 @@ public class AccountResponse {
         private String atk;
         private String rtk;
         private Boolean isRegister;
+        private String nickname;
 
         public static OAuthConnection to(Account account, Boolean isRegister, String atk, String rtk) {
+            String nickname;
+            if (account.getNickName() == null) {
+                nickname = "null";
+            } else {
+                nickname = account.getNickName();
+            }
+
             return OAuthConnection.builder()
                     .accountId(account.getAccountId())
                     .isRegister(isRegister)
                     .atk(atk)
                     .rtk(rtk)
+                    .nickname(nickname)
                     .build();
         }
     }
