@@ -150,7 +150,7 @@ public class QnaBoardControllerDocsTest extends RestDocsSupport {
         PageImpl<QnaBoardResponse.ReadQuestion> page = new PageImpl<>(content, pageable, 4);
 
 
-        given(qnaBoardService.readQuestions(any(), any(), any()))
+        given(qnaBoardService.readQuestions(any(), any()))
                 .willReturn(page);
 
         ResourceSnippetParameters resources = ResourceSnippetParameters.builder()

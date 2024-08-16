@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
@@ -214,7 +213,7 @@ public class AccountControllerDocsTest extends RestDocsSupport {
         RestDocumentationResultHandler document = documentHandler("read-account-insurances", prettyPrint(), resource);
 
         // when // then
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/account/insurances")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/account/insurances")
                         .header("Authorization", "Bearer AccessToken"))
                 .andDo(print())
                 .andExpect(status().isOk())
