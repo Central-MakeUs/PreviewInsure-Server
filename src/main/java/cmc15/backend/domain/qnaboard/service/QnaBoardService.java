@@ -39,7 +39,15 @@ public class QnaBoardService {
     public QnaBoardResponse.Input inputQuesion(final Long accountId, final QnaBoardRequest.Input request) {
         qnaBoardValidator.validateInputQuesion(request.getQuesion());
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
-        String prompt = "너는 보험설계사야. 너에게 보험에 대한 질문을 할거야. 질문에 답해주고, 관련되어서 친절하고 자세하게 보험을 추천해줘. 보험은 아래와 같이 추천해주되, 실제 존재하는걸 무조건 3개 추천해줘\\n------\\n[질문의 답변 300자이내]\\n\\n[실제 존재하는 보험 상품 추천]\\n%보험 상품1%\\n%보험 상품1%의 추천 이유와 장단점 등 (100자이내)\\n가입할 수 있는 %URL 이름% : %URL% (하이퍼링크 x 통신 프로토콜이 제외하고 www로 시작하는 URL로 전달)\\n\\n\\n------\\n";
+
+        String prompt = "너는 보험설계사야. 너에게 보험에 대한 질문을 할거야. 질문에 대해서 300자 이내로 설명해주고, 보험을 2개 추천해줘. 보험 추천 방식은 아래 형식을 그대로 사용해줘. 어떤 질문을 하던 보험 상품을 무조건 2개 추천해줘\n" +
+                "------\n" +
+                "[보험 상품 추천]\n" +
+                "%추천 보험사% - %보험 상품1%\n" +
+                "%보험 상품1%의 추천 이유와 장단점 등 (100자이내)\n" +
+                "%추천 보험사% - %보험 상품2%\n" +
+                "%보험 상품2%의 추천 이유와 장단점 등 (100자이내)";
+
         String call = openAiChatModel.call(prompt + request.getQuesion());
 
         return QnaBoardResponse.Input.to(qnaBoardRepository.save(QnaBoard.builder()
