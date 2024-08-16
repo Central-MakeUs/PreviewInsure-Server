@@ -56,11 +56,10 @@ public class QnaBoardController {
      */
     @GetMapping("/questions")
     public CustomResponseEntity<Page<QnaBoardResponse.ReadQuestion>> readQuestions(
-            @AuthenticationPrincipal final Long accountId,
             @RequestParam final Integer page,
             @RequestParam(required = false) final String insuranceType
     ) {
-        return CustomResponseEntity.success(qnaBoardService.readQuestions(accountId, page, insuranceType));
+        return CustomResponseEntity.success(qnaBoardService.readQuestions(page, insuranceType));
     }
 
     /**

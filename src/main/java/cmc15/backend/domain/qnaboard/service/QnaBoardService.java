@@ -74,7 +74,7 @@ public class QnaBoardService {
      * @apiNote Q&A 게시판 글 페이지 조회 API
      */
     // TODO: 8/4/24 QueryDSL 사용 필요해보임
-    public Page<QnaBoardResponse.ReadQuestion> readQuestions(Long accountId, Integer page, String insuranceType) {
+    public Page<QnaBoardResponse.ReadQuestion> readQuestions(Integer page, String insuranceType) {
         PageRequest paging = PageRequest.of(page, 10, Sort.Direction.ASC, "qnaBoardId");
 
         if (insuranceType != null) {
