@@ -211,13 +211,14 @@ public class AccountControllerDocsTest extends RestDocsSupport {
                         fieldWithPath("data[].insuranceCompany").type(STRING).description("내 보험 회사"))
                 .build();
 
-        documentHandler("read-account-insurances", prettyPrint(), resource);
+        RestDocumentationResultHandler document = documentHandler("read-account-insurances", prettyPrint(), resource);
 
         // when // then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/account/insurances")
                         .header("Authorization", "Bearer AccessToken"))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document);
     }
 
     @DisplayName("닉네임 업데이트 API")
