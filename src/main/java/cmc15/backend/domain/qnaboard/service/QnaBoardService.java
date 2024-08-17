@@ -82,7 +82,7 @@ public class QnaBoardService {
             return qnaBoardPage.map(QnaBoardResponse.ReadQuestion::to);
         }
 
-        Page<QnaBoard> qnaBoardPage = qnaBoardRepository.findAll(paging);
+        Page<QnaBoard> qnaBoardPage = qnaBoardRepository.findAllByIsShare(paging, true);
         return qnaBoardPage.map(QnaBoardResponse.ReadQuestion::to);
     }
 

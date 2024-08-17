@@ -13,4 +13,6 @@ import java.util.List;
 public interface QnaBoardRepository extends JpaRepository<QnaBoard, Long> {
     List<QnaBoard> findByAccount_AccountId(Long accountId);
     Page<QnaBoard> findByInsuranceTypeAndIsShare(InsuranceType insuranceType, Pageable pageable, boolean isShare);
+
+    Page<QnaBoard> findAllByIsShare(Pageable pageable, boolean isShare);
 }
