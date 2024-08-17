@@ -75,7 +75,7 @@ public class QnaBoardService {
      */
     // TODO: 8/4/24 QueryDSL 사용 필요해보임
     public Page<QnaBoardResponse.ReadQuestion> readQuestions(Integer page, String insuranceType) {
-        PageRequest paging = PageRequest.of(page, 10, Sort.Direction.ASC, "qnaBoardId");
+        PageRequest paging = PageRequest.of(page, 10, Sort.Direction.DESC, "qnaBoardId");
 
         if (insuranceType != null) {
             Page<QnaBoard> qnaBoardPage = qnaBoardRepository.findByInsuranceTypeAndIsShare(InsuranceType.valueOf(insuranceType), paging, true);
