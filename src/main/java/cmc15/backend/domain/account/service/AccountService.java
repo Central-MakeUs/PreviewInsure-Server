@@ -166,6 +166,9 @@ public class AccountService {
     public Void updateInsureBoarding(final Long accountId, final AccountRequest.InsureBoarding request) {
         accountServiceValidator.validateEmptyGender(request);
         Account account = updateGender(accountId, request);
+
+        accountInsuranceRepository.deleteByAccount(account);
+
         saveInsureBoard(request, account);
         return null;
     }

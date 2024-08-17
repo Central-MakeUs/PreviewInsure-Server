@@ -17,4 +17,6 @@ public interface AccountInsuranceRepository extends JpaRepository<AccountInsuran
     Optional<AccountInsurance> findByAccountAndInsuranceType(Account account, InsuranceType insuranceType);
 
     List<AccountInsurance> findByAccount(Account account);
+
+    void deleteByAccount(Account account);
 }
