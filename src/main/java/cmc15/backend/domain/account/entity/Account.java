@@ -60,8 +60,9 @@ public class Account {
         this.qnaBoard = qnaBoard;
     }
 
-    public void updateAge(Integer age) {
+    public Void updateAge(Integer age) {
         this.age = age;
+        return null;
     }
 
     public void updateGender(String gender) {

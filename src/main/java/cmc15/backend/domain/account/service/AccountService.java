@@ -169,12 +169,9 @@ public class AccountService {
      * @apiNote 나이 입력 API
      */
     @Transactional
-    public Void updateAge(Long accountId, final AccountRequest.Age request) {
-        int age = calculateAge(request);
-
+    public Void updateAge(final Long accountId, final AccountRequest.Age request) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
-        account.updateAge(age);
-        return null;
+        return account.updateAge(calculateAge(request));
     }
 
     // 나이 계산
