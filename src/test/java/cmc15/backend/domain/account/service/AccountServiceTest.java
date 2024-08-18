@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Optional;
 
 import static cmc15.backend.domain.account.entity.Authority.ROLE_USER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,14 +36,7 @@ class AccountServiceTest {
     @Test
     void 나이_입력_API_성공() {
         // given
-        Account accountBuild = Account.builder()
-                .email("test@test.com")
-                .nickName("불편한 코끼리")
-                .password("test1234")
-                .authority(ROLE_USER)
-                .build();
-
-        Account account = accountRepository.save(accountBuild);
+        Account account = accountRepository.save(getAccountBuild("test@test.com", "불편한 코끼리"));
 
         AccountRequest.Age request = new AccountRequest.Age(2024, 10);
 
@@ -55,5 +49,30 @@ class AccountServiceTest {
         int years = Period.between(birthDate, currentDate).getYears();
 
         assertThat(account.getAge()).isEqualTo(years);
+    }
+
+    @DisplayName("회원탈퇴_API_성공")
+    @Test
+    void 회원탈퇴_API_성공() {
+        // given
+        Account account = accountRepository.save(getAccountBuild("test2@test.com", "배고픈 원숭이"));
+
+        // when
+        accountService.deleteAccount(account.getAccountId());
+        em.flush();
+        em.clear();
+
+        // then
+        Optional<Account> assertAccount = accountRepository.findById(account.getAccountId());
+        assertThat(assertAccount.isEmpty()).isTrue();
+    }
+
+    private static Account getAccountBuild(String email, String nickname) {
+        return Account.builder()
+                .email(email)
+                .nickName(nickname)
+                .password("test1234")
+                .authority(ROLE_USER)
+                .build();
     }
 }
