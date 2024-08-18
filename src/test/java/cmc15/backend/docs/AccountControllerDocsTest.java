@@ -8,20 +8,19 @@ import cmc15.backend.domain.account.service.AccountService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 
-import static com.epages.restdocs.apispec.Schema.schema;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,53 +33,96 @@ public class AccountControllerDocsTest extends RestDocsSupport {
         return new AccountController(accountService);
     }
 
-    @DisplayName("회원가입 API docs 작성")
+    @DisplayName("소셜로그인 API")
     @Test
-    void 회원가입_API_DOCS() throws Exception {
+    void 소셜로그인_API() throws Exception {
         // given
-        AccountRequest.Register request = new AccountRequest.Register(
-                "김덕배", "hwsa10041@gmail.com", "abc123"
-        );
-
-        given(accountService.accountRegister(any(AccountRequest.Register.class)))
-                .willReturn(AccountResponse.Connection.builder()
+        given(accountService.socialLogin(any(), anyString()))
+                .willReturn(AccountResponse.OAuthConnection.builder()
                         .accountId(1L)
-                        .nickName("김덕배")
-                        .email("hwsa10041@gmail.com")
-                        .atk("발급된 accessToken")
-                        .rtk("발급된 refreshToken")
+                        .atk("ATK")
+                        .rtk("RTK")
+                        .isRegister(true)
+                        .nickname("불편한 코끼리")
                         .build());
 
         ResourceSnippetParameters resource = ResourceSnippetParameters.builder()
                 .tag("계정")
-                .summary("회원가입 API")
-                .description("회원가입을 진행하는 API")
-                .requestSchema(schema("AccountRequest.Register"))
-                .responseSchema(schema("AccountResponse.Connection"))
-                .requestFields(
-                        fieldWithPath("nickName").type(STRING).description("별명"),
-                        fieldWithPath("email").type(STRING).description("이메일"),
-                        fieldWithPath("password").type(STRING).description("비밀번호"))
+                .summary("소셜로그인 API")
+                .description("소셜로그인을 진행하는 API 입니다. 해당 API는 현재 '구글' 만 적용됩니다. \n" +
+                        "platform : GOOGLE(지원중)/NAVER(미지원)/KAKAO(미지원) \n")
+                .queryParameters(
+                        parameterWithName("platform").description("소셜로그인을 지원하는 플랫폼 이름"),
+                        parameterWithName("code").description("인가코드"))
                 .responseFields(
                         fieldWithPath("code").type(NUMBER).description("상태 코드"),
                         fieldWithPath("message").type(STRING).description("상태 메세지"),
                         fieldWithPath("data.accountId").type(NUMBER).description("계정 ID"),
-                        fieldWithPath("data.nickName").type(STRING).description("별명"),
-                        fieldWithPath("data.email").type(STRING).description("이메일"),
                         fieldWithPath("data.atk").type(STRING).description("발급된 accessToken"),
-                        fieldWithPath("data.rtk").type(STRING).description("발급된 refreshToken"))
+                        fieldWithPath("data.rtk").type(STRING).description("발급된 refreshToken"),
+                        fieldWithPath("data.isRegister").type(BOOLEAN).description("이메일"),
+                        fieldWithPath("data.nickname").type(STRING).description("별명"))
                 .build();
 
-        RestDocumentationResultHandler document = documentHandler("register-api", prettyPrint(), prettyPrint(), resource);
+        RestDocumentationResultHandler document = documentHandler("social-login", prettyPrint(), resource);
 
         // when // then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/account")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/oauth")
+                        .param("platform", "GOOGLE")
+                        .param("code", "2$AS*cvyAS*%jkshvasjhaj4h2S&Abassjasgdashjashj"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document);
     }
+
+    // TODO: 8/18/24 회원가입 API는 개발되었지만, 사용되지 않음
+//    @DisplayName("회원가입 API 작성")
+//    @Test
+//    void 회원가입_API_DOCS() throws Exception {
+//        // given
+//        AccountRequest.Register request = new AccountRequest.Register(
+//                "김덕배", "hwsa10041@gmail.com", "abc123"
+//        );
+//
+//        given(accountService.accountRegister(any(AccountRequest.Register.class)))
+//                .willReturn(AccountResponse.Connection.builder()
+//                        .accountId(1L)
+//                        .nickName("김덕배")
+//                        .email("hwsa10041@gmail.com")
+//                        .atk("발급된 accessToken")
+//                        .rtk("발급된 refreshToken")
+//                        .build());
+//
+//        ResourceSnippetParameters resource = ResourceSnippetParameters.builder()
+//                .tag("계정")
+//                .summary("회원가입 API")
+//                .description("회원가입을 진행하는 API")
+//                .requestSchema(schema("AccountRequest.Register"))
+//                .responseSchema(schema("AccountResponse.Connection"))
+//                .requestFields(
+//                        fieldWithPath("nickName").type(STRING).description("별명"),
+//                        fieldWithPath("email").type(STRING).description("이메일"),
+//                        fieldWithPath("password").type(STRING).description("비밀번호"))
+//                .responseFields(
+//                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+//                        fieldWithPath("message").type(STRING).description("상태 메세지"),
+//                        fieldWithPath("data.accountId").type(NUMBER).description("계정 ID"),
+//                        fieldWithPath("data.nickName").type(STRING).description("별명"),
+//                        fieldWithPath("data.email").type(STRING).description("이메일"),
+//                        fieldWithPath("data.atk").type(STRING).description("발급된 accessToken"),
+//                        fieldWithPath("data.rtk").type(STRING).description("발급된 refreshToken"))
+//                .build();
+//
+//        RestDocumentationResultHandler document = documentHandler("register-api", prettyPrint(), prettyPrint(), resource);
+//
+//        // when // then
+//        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/account")
+//                        .content(objectMapper.writeValueAsString(request))
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andDo(document);
+//    }
 
     @DisplayName("랜덤 닉네임 생성 API")
     @Test

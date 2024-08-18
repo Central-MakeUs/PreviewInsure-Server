@@ -12,6 +12,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class AccountControllerTest extends ControllerTestSupport {
 
+    @DisplayName("소셜로그인 API")
+    @Test
+    void 소셜로그인_API() throws Exception {
+        // given
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/oauth")
+                        .param("platform", "GOOGLE")
+                        .param("code", "2$AS*cvyAS*%jkshvasjhaj4h2S&Abassjasgdashjashj"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
     @DisplayName("회원가입 API")
     @Test
     void 회원가입_API() throws Exception {
