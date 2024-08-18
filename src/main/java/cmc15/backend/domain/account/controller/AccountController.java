@@ -21,7 +21,7 @@ public class AccountController {
      * @param code
      * @apiNote 소셜 로그인 API
      */
-    @PostMapping("/oauth")
+    @GetMapping("/oauth")
     public CustomResponseEntity<AccountResponse.OAuthConnection> socialLogin(
             @RequestParam final Platform platform,
             @RequestParam final String code
