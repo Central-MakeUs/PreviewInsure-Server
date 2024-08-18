@@ -24,7 +24,6 @@ public class AppleController {
      */
     @PostMapping("/apple/token")
     public void appleLogin2(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println(request.getParameter("code"));
         response.sendRedirect(accountService.socialLogin(APPLE, request.getParameter("code")).getRedirectUrl());
     }
 }

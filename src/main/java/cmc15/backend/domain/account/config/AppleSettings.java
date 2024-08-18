@@ -17,4 +17,5 @@ public class AppleSettings {
     private String keyId;
     private String keyPath;
     private String privateKey;
+    private String redirectSuccess;
 }

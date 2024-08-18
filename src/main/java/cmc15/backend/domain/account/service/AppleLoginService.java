@@ -67,7 +67,6 @@ public class AppleLoginService implements OAuth2Service {
     @Override
     @Transactional
     public AccountResponse.OAuthConnection toSocialLoginAccount(Platform platform, String code) {
-        System.out.println(code);
         AppleSocialTokenInfoResponse response = exchangeAppleSocialToken(appleSettings.getClientId(), generateClientSecret(), AUTHORIZATION_CODE, code);
         String idToken = response.getIdToken();
         AppleLoginResponse appleLoginResponse = TokenDecoder.decodePayload(idToken, AppleLoginResponse.class);
@@ -85,9 +84,8 @@ public class AppleLoginService implements OAuth2Service {
         String atk = tokenProvider.createAccessToken(account.getAccountId(), getAuthentication(account.getEmail(), oAuthSettings.getNonEncryptionPassword()));
         String rtk = tokenProvider.createRefreshToken(account.getEmail());
         String nickname = account.getNickName() == null ? "none" : encode(account.getNickName(), UTF_8);
-        String successUrl = appleSettings.getRedirectUrl() + atk + "&nickname=" + encode(nickname, UTF_8);
+        String successUrl = appleSettings.getRedirectSuccess() + atk + "&nickname=" + nickname;
 
-        System.out.println(successUrl);
         return AccountResponse.OAuthConnection.toRedirect(account, atk, rtk, successUrl);
     }
 

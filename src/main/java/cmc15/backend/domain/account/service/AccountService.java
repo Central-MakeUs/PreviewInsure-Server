@@ -39,7 +39,6 @@ public class AccountService {
      */
     @Transactional
     public AccountResponse.OAuthConnection socialLogin(final Platform platform, final String code) {
-        System.out.println(code);
         return oAuth2Services.stream().filter(oAuth2Service -> oAuth2Service.suppots().equals(platform))
                 .findFirst()
                 .map(oAuth2Service -> oAuth2Service.toSocialLoginAccount(platform, code))
