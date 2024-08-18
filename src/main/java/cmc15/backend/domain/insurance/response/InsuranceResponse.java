@@ -97,6 +97,8 @@ public class InsuranceResponse {
                         "https://reviewinsue-bucket.s3.ap-northeast-2.amazonaws.com/image/%E1%84%86%E1%85%B5%E1%84%85%E1%85%A2%E1%84%8B%E1%85%A6%E1%84%89%E1%85%A6%E1%86%BA%E1%84%89%E1%85%A2%E1%86%BC%E1%84%86%E1%85%A7%E1%86%BC.png";
                 case "신한라이프생명" ->
                         "https://reviewinsue-bucket.s3.ap-northeast-2.amazonaws.com/image/%E1%84%89%E1%85%B5%E1%86%AB%E1%84%92%E1%85%A1%E1%86%AB%E1%84%85%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%91%E1%85%B3.png";
+                case "처브라이프생명" ->
+                    "https://reviewinsue-bucket.s3.ap-northeast-2.amazonaws.com/image/CHUBB.png";
                 case "푸본현대생명" ->
                         "https://reviewinsue-bucket.s3.ap-northeast-2.amazonaws.com/image/%E1%84%91%E1%85%AE%E1%84%87%E1%85%A9%E1%86%AB%E1%84%92%E1%85%A7%E1%86%AB%E1%84%83%E1%85%A2%E1%84%89%E1%85%A2%E1%86%BC%E1%84%86%E1%85%A7%E1%86%BC.png";
                 case "하나생명" ->
