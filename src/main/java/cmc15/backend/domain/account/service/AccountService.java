@@ -115,6 +115,14 @@ public class AccountService {
         throw new CustomException(NOT_MATCHED_PLATFORM);
     }
 
+    private Authentication getAuthentication(String email, String password) {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(email, password);
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
+    }
+
     /**
      * @return AccountResponse.Connection
      * @apiNote 회원가입 API / 현재 사용되지 않음
@@ -174,14 +182,6 @@ public class AccountService {
         LocalDate birthDate = LocalDate.of(request.getYear(), request.getMonth(), FIX_AGE_DAY);
         LocalDate currentDate = LocalDate.now();
         return Period.between(birthDate, currentDate).getYears();
-    }
-
-    private Authentication getAuthentication(String email, String password) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(email, password);
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return authentication;
     }
 
     /**
