@@ -6,6 +6,6 @@ public interface OAuth2Service {
 
     Platform suppots();
 
-    String toOAuthEntityResponse(final Platform platform, final String code, final String appleToken);
+    String toOAuthEntityResponse(final Platform platform, final String code);
 
 }

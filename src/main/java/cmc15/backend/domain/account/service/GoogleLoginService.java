@@ -39,7 +39,7 @@ public class GoogleLoginService implements OAuth2Service {
     }
 
     @Override
-    public String toOAuthEntityResponse(final Platform platform, final String authorizationCode, final String appleToken) {
+    public String toOAuthEntityResponse(final Platform platform, final String authorizationCode) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);

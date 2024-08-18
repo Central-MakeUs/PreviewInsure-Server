@@ -82,6 +82,12 @@ public class AccountService {
     @Value("${apple.redirect-success}")
     private String redirectUrl;
 
+    @Value("${oauth.password}")
+    private String defaultPassword;
+
+    @Value("${oauth.non-encryption-password}")
+    private String defaultNonPassword;
+
     public static final int FIX_AGE_DAY = 1;
 
     /**
@@ -156,35 +162,30 @@ public class AccountService {
     /**
      * @param platform
      * @param code
-     * @param appleToken
-     * @return
+     * @apiNote 소셜 로그인 API
      */
     @Transactional
-    public AccountResponse.OAuthConnection socialLogin(final Platform platform, final String code, final String appleToken) {
-        String oAuthEmail = "";
+    public AccountResponse.OAuthConnection socialLogin(final Platform platform, final String code) {
         for (OAuth2Service oAuth2Service : oAuth2Services) {
             if (oAuth2Service.suppots().equals(platform)) {
-                oAuthEmail = oAuth2Service.toOAuthEntityResponse(platform, code, appleToken);
+                String oAuthEmail = oAuth2Service.toOAuthEntityResponse(platform, code);
+
+                Optional<Account> optionalAccount = accountRepository.findByEmail(oAuthEmail);
+                Account account = optionalAccount.orElseGet(() ->
+                        accountRepository.save(Account.builder()
+                                .email(oAuthEmail)
+                                .password(defaultPassword)
+                                .authority(ROLE_USER)
+                                .build()));
+
+                String atk = tokenProvider.createAccessToken(account.getAccountId(), getAuthentication(account.getEmail(), defaultNonPassword));
+                String rtk = tokenProvider.createRefreshToken(account.getEmail());
+
+                return AccountResponse.OAuthConnection.to(account, optionalAccount.isPresent(), atk, rtk);
             }
         }
 
-        if (oAuthEmail.isBlank()) throw new CustomException(NOT_MATCHED_PLATFORM);
-
-        Optional<Account> optionalAccount = accountRepository.findByEmail(oAuthEmail);
-        String email = oAuthEmail;
-        Account account = optionalAccount.orElseGet(() ->
-                accountRepository.save(Account.builder()
-                        .email(email)
-                        .password("$2a$10$7NPHBBkAuyWG/lJz6Yv8/.n099SecuAwWkQq4DMkxeVKWl/R7o5.2")
-                        .authority(ROLE_USER)
-                        .build())
-        );
-
-        String atk = tokenProvider.createAccessToken(account.getAccountId(), getAuthentication(account.getEmail(), "abc123"));
-        String rtk = tokenProvider.createRefreshToken(account.getEmail());
-
-        return AccountResponse.OAuthConnection.to(account, optionalAccount.isPresent(), atk, rtk);
-
+        throw new CustomException(NOT_MATCHED_PLATFORM);
     }
 
     /**

@@ -17,18 +17,16 @@ public class AccountController {
     private final AccountService accountService;
 
     /**
+     * @param platform
      * @param code
-     * @param appleToken
-     * @return
      * @apiNote 소셜 로그인 API
      */
     @PostMapping("/oauth")
     public CustomResponseEntity<AccountResponse.OAuthConnection> socialLogin(
             @RequestParam final Platform platform,
-            @RequestParam final String code,
-            @RequestParam(required = false) final String appleToken
+            @RequestParam final String code
     ) {
-        return CustomResponseEntity.success(accountService.socialLogin(platform, code, appleToken));
+        return CustomResponseEntity.success(accountService.socialLogin(platform, code));
     }
 
     // 회원가입 API
@@ -77,9 +75,9 @@ public class AccountController {
     }
 
     /**
-     * @apiNote 회원탈퇴 API
      * @param accountId
      * @return
+     * @apiNote 회원탈퇴 API
      */
     @DeleteMapping("/account")
     public CustomResponseEntity<Void> deleteAccount(
@@ -90,6 +88,7 @@ public class AccountController {
 
     /**
      * 내 정보 조회 API
+     *
      * @param accountId
      * @return AccountResponse.Detail
      */
