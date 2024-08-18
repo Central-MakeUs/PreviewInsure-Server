@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
+import static cmc15.backend.domain.account.entity.Platform.APPLE;
+
 @RestController
 @RequiredArgsConstructor
 public class AppleController {
@@ -21,7 +23,7 @@ public class AppleController {
      * @apiNote 애플 로그인 API
      */
     @PostMapping("/apple/token")
-    public void appleLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect(accountService.appleLogin(request.getParameter("code")));
+    public void appleLogin2(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect(accountService.socialLogin(APPLE, request.getParameter("code")).getRedirectUrl());
     }
 }

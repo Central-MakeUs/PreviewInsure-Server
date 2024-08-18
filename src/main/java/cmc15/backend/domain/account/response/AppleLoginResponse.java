@@ -1,9 +1,9 @@
-package cmc15.backend.domain.account.service;
+package cmc15.backend.domain.account.response;
 
 import lombok.Getter;
 
 @Getter
-public class AppleIdTokenPayload {
+public class AppleLoginResponse {
 
     private String sub;
 

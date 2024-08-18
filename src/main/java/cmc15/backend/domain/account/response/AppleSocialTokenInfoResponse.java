@@ -1,4 +1,4 @@
-package cmc15.backend.domain.account.service;
+package cmc15.backend.domain.account.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

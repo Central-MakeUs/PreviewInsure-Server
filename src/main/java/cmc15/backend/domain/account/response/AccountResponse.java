@@ -3,11 +3,13 @@ package cmc15.backend.domain.account.response;
 import cmc15.backend.domain.account.entity.Account;
 import cmc15.backend.domain.account.entity.AccountInsurance;
 import cmc15.backend.domain.account.entity.InsuranceType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 import static lombok.AccessLevel.PRIVATE;
 
 public class AccountResponse {
@@ -16,28 +18,35 @@ public class AccountResponse {
     @NoArgsConstructor(access = PRIVATE)
     @Getter
     @Builder
+    @JsonInclude(NON_NULL)
     public static class OAuthConnection {
         private Long accountId;
         private String atk;
         private String rtk;
-        private Boolean isRegister;
         private String nickname;
+        private String redirectUrl;
 
-        public static OAuthConnection to(Account account, Boolean isRegister, String atk, String rtk) {
-            String nickname;
-            if (account.getNickName() == null) {
-                nickname = "null";
-            } else {
-                nickname = account.getNickName();
-            }
-
+        public static OAuthConnection to(Account account, String atk, String rtk) {
             return OAuthConnection.builder()
                     .accountId(account.getAccountId())
-                    .isRegister(isRegister)
                     .atk(atk)
                     .rtk(rtk)
-                    .nickname(nickname)
+                    .nickname(getNickname(account))
                     .build();
+        }
+
+        public static OAuthConnection toRedirect(Account account, String atk, String rtk, String redirectUrl) {
+            return OAuthConnection.builder()
+                    .accountId(account.getAccountId())
+                    .atk(atk)
+                    .rtk(rtk)
+                    .nickname(getNickname(account))
+                    .redirectUrl(redirectUrl)
+                    .build();
+        }
+
+        private static String getNickname(Account account) {
+            return account.getNickName() == null ? "null" : account.getNickName();
         }
     }
 

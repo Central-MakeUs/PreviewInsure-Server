@@ -30,17 +30,6 @@ public class AccountController {
     }
 
     /**
-     * @param request
-     * @apiNote 회원가입 API / 현재 사용되지 않음
-     */
-    @PostMapping("/account")
-    public CustomResponseEntity<AccountResponse.Connection> accountRegister(
-            @RequestBody @Valid final AccountRequest.Register request
-    ) {
-        return CustomResponseEntity.success(accountService.accountRegister(request));
-    }
-
-    /**
      * @return success
      * @apiNote 랜덤 닉네임 생성 API
      */
