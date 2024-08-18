@@ -29,7 +29,10 @@ public class AccountController {
         return CustomResponseEntity.success(accountService.socialLogin(platform, code));
     }
 
-    // 회원가입 API
+    /**
+     * @param request
+     * @apiNote 회원가입 API / 현재 사용되지 않음
+     */
     @PostMapping("/account")
     public CustomResponseEntity<AccountResponse.Connection> accountRegister(
             @RequestBody @Valid final AccountRequest.Register request

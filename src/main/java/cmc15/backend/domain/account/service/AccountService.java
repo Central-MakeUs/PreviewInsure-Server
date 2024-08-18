@@ -91,8 +91,37 @@ public class AccountService {
     public static final int FIX_AGE_DAY = 1;
 
     /**
+     * @param platform
+     * @param code
+     * @apiNote 소셜 로그인 API
+     */
+    @Transactional
+    public AccountResponse.OAuthConnection socialLogin(final Platform platform, final String code) {
+        for (OAuth2Service oAuth2Service : oAuth2Services) {
+            if (oAuth2Service.suppots().equals(platform)) {
+                String oAuthEmail = oAuth2Service.toOAuthEntityResponse(platform, code);
+
+                Optional<Account> optionalAccount = accountRepository.findByEmail(oAuthEmail);
+                Account account = optionalAccount.orElseGet(() ->
+                        accountRepository.save(Account.builder()
+                                .email(oAuthEmail)
+                                .password(defaultPassword)
+                                .authority(ROLE_USER)
+                                .build()));
+
+                String atk = tokenProvider.createAccessToken(account.getAccountId(), getAuthentication(account.getEmail(), defaultNonPassword));
+                String rtk = tokenProvider.createRefreshToken(account.getEmail());
+
+                return AccountResponse.OAuthConnection.to(account, optionalAccount.isPresent(), atk, rtk);
+            }
+        }
+
+        throw new CustomException(NOT_MATCHED_PLATFORM);
+    }
+
+    /**
      * @return AccountResponse.Connection
-     * @apiNote 회원가입 API
+     * @apiNote 회원가입 API / 현재 사용되지 않음
      */
     @Transactional
     public AccountResponse.Connection accountRegister(final AccountRequest.Register request) {
@@ -112,14 +141,6 @@ public class AccountService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .authority(ROLE_USER)
                 .build());
-    }
-
-    private Authentication getAuthentication(String email, String password) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(email, password);
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return authentication;
     }
 
     /**
@@ -159,33 +180,12 @@ public class AccountService {
         return Period.between(birthDate, currentDate).getYears();
     }
 
-    /**
-     * @param platform
-     * @param code
-     * @apiNote 소셜 로그인 API
-     */
-    @Transactional
-    public AccountResponse.OAuthConnection socialLogin(final Platform platform, final String code) {
-        for (OAuth2Service oAuth2Service : oAuth2Services) {
-            if (oAuth2Service.suppots().equals(platform)) {
-                String oAuthEmail = oAuth2Service.toOAuthEntityResponse(platform, code);
-
-                Optional<Account> optionalAccount = accountRepository.findByEmail(oAuthEmail);
-                Account account = optionalAccount.orElseGet(() ->
-                        accountRepository.save(Account.builder()
-                                .email(oAuthEmail)
-                                .password(defaultPassword)
-                                .authority(ROLE_USER)
-                                .build()));
-
-                String atk = tokenProvider.createAccessToken(account.getAccountId(), getAuthentication(account.getEmail(), defaultNonPassword));
-                String rtk = tokenProvider.createRefreshToken(account.getEmail());
-
-                return AccountResponse.OAuthConnection.to(account, optionalAccount.isPresent(), atk, rtk);
-            }
-        }
-
-        throw new CustomException(NOT_MATCHED_PLATFORM);
+    private Authentication getAuthentication(String email, String password) {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(email, password);
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
     }
 
     /**
