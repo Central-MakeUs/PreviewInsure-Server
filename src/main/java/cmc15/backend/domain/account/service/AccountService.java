@@ -1,5 +1,6 @@
 package cmc15.backend.domain.account.service;
 
+import cmc15.backend.domain.account.config.NicknameSettings;
 import cmc15.backend.domain.account.entity.Account;
 import cmc15.backend.domain.account.entity.Platform;
 import cmc15.backend.domain.account.repository.AccountRepository;
@@ -54,15 +55,10 @@ public class AccountService {
     private final RestTemplate restTemplate;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final NicknameSettings nicknameSettings;
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final List<OAuth2Service> oAuth2Services;
-
-    @Value("${nickname.word1}")
-    private String namesPart1;
-
-    @Value("${nickname.word2}")
-    private String namesPart2;
 
     @Value("${apple.auth-url}")
     private String appleAuthUrl;
@@ -149,13 +145,13 @@ public class AccountService {
      */
     public AccountResponse.NickName createNickName() {
         Random random = new Random();
-        String[] split1 = namesPart1.split(",");
-        String[] split2 = namesPart2.split(",");
+        String[] lastNames = nicknameSettings.getLastName();
+        String[] firstNames = nicknameSettings.getFirstName();
 
-        int part1Index = random.nextInt(split1.length);
-        int part2Index = random.nextInt(split2.length);
+        int part1Index = random.nextInt(lastNames.length);
+        int part2Index = random.nextInt(firstNames.length);
 
-        String nickName = split1[part1Index] + " " + split2[part2Index];
+        String nickName = lastNames[part1Index] + " " + firstNames[part2Index];
 
         return AccountResponse.NickName.to(nickName);
     }
