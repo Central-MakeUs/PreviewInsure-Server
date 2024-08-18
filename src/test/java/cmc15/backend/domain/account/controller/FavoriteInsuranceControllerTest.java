@@ -27,4 +27,16 @@ class FavoriteInsuranceControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @DisplayName("내 관심보험 전체 조회 API")
+    @Test
+    void 내_관심보험_전체_조회_API() throws Exception {
+        // given
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/account/favorite")
+                        .header("Authorization", "Bearer AccessToken"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }
