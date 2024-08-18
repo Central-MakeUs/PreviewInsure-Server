@@ -84,7 +84,7 @@ public class AppleLoginService implements OAuth2Service {
         String atk = tokenProvider.createAccessToken(account.getAccountId(), getAuthentication(account.getEmail(), oAuthSettings.getNonEncryptionPassword()));
         String rtk = tokenProvider.createRefreshToken(account.getEmail());
         String nickname = account.getNickName() == null ? "none" : encode(account.getNickName(), UTF_8);
-        String successUrl = appleSettings.getRedirectUrl() + atk + "&nickname=" + nickname;
+        String successUrl = appleSettings.getRedirectUrl() + atk + "&nickname=" + encode(nickname, UTF_8);
 
         return AccountResponse.OAuthConnection.toRedirect(account, atk, rtk, successUrl);
     }

@@ -6,12 +6,9 @@ import cmc15.backend.domain.account.entity.Platform;
 import cmc15.backend.domain.account.repository.AccountRepository;
 import cmc15.backend.domain.account.request.AccountRequest;
 import cmc15.backend.domain.account.response.AccountResponse;
-import cmc15.backend.global.config.jwt.TokenProvider;
 import cmc15.backend.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,11 +26,8 @@ import static cmc15.backend.global.Result.NOT_MATCHED_PLATFORM;
 @Slf4j
 public class AccountService {
 
-    private final TokenProvider tokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final NicknameSettings nicknameSettings;
     private final AccountRepository accountRepository;
-    private final PasswordEncoder passwordEncoder;
     private final List<OAuth2Service> oAuth2Services;
 
     public static final int FIX_AGE_DAY = 1;
