@@ -88,7 +88,6 @@ public class AccountService {
     /**
      * @param accountId
      * @param request
-     * @return Void
      * @apiNote 닉네임 업데이트 API
      */
     @Transactional
@@ -100,7 +99,6 @@ public class AccountService {
 
     /**
      * @param accountId
-     * @return
      * @apiNote 회원탈퇴 API
      */
     @Transactional
@@ -109,6 +107,10 @@ public class AccountService {
         return null;
     }
 
+    /**
+     * @param accountId
+     * @apiNote 내 정보 조회 API
+     */
     public AccountResponse.Detail readAccount(Long accountId) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         return AccountResponse.Detail.to(account);

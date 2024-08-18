@@ -30,7 +30,6 @@ public class AccountController {
     }
 
     /**
-     * @return success
      * @apiNote 랜덤 닉네임 생성 API
      */
     @GetMapping("/register/nickname")
@@ -41,7 +40,6 @@ public class AccountController {
     /**
      * @param accountId
      * @param request
-     * @return Void
      * @apiNote 닉네임 업데이트 API
      */
     @PatchMapping("register/nickname")
@@ -55,7 +53,6 @@ public class AccountController {
     /**
      * @param accountId
      * @param request
-     * @return void
      * @apiNote 나이 입력 API
      */
     @PatchMapping("/register/age")
@@ -68,7 +65,6 @@ public class AccountController {
 
     /**
      * @param accountId
-     * @return
      * @apiNote 회원탈퇴 API
      */
     @DeleteMapping("/account")
@@ -79,10 +75,8 @@ public class AccountController {
     }
 
     /**
-     * 내 정보 조회 API
-     *
      * @param accountId
-     * @return AccountResponse.Detail
+     * @apiNote 내 정보 조회 API
      */
     @GetMapping("/account")
     public CustomResponseEntity<AccountResponse.Detail> readAccount(
