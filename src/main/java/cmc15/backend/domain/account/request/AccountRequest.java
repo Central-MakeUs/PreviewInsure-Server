@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class AccountRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
+    @ToString
     public static class Register {
         @NotBlank(message = "필드가 null이 아니고, 비어 있지 않으며, 공백 문자만으로 이루어지지 않아야 합니다.")
         private String nickName;
@@ -30,6 +32,7 @@ public class AccountRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
+    @ToString
     public static class Age {
         private Integer year;
         private Integer month;
@@ -38,6 +41,7 @@ public class AccountRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
+    @ToString
     public static class InsureBoarding {
         private String gender;
 
@@ -59,6 +63,7 @@ public class AccountRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
+    @ToString
     public static class Nickname {
         @NotNull(message = "닉네임은 필수 값 입니다.")
         private String nickname;

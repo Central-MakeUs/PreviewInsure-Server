@@ -1,10 +1,7 @@
 package cmc15.backend.domain.qnaboard.dto.response;
 
 import cmc15.backend.domain.qnaboard.entity.QnaBoard;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -14,6 +11,7 @@ public class QnaBoardResponse {
     @NoArgsConstructor(access = PRIVATE)
     @Getter
     @Builder
+    @ToString
     public static class Input {
         private Long qnaBoardId;
         private String quesion;
@@ -36,6 +34,7 @@ public class QnaBoardResponse {
     @NoArgsConstructor
     @Getter
     @Builder
+    @ToString
     public static class Link {
         private String insuranceCompany;
         private String insuranceLink;
@@ -52,6 +51,7 @@ public class QnaBoardResponse {
     @NoArgsConstructor(access = PRIVATE)
     @Getter
     @Builder
+    @ToString
     public static class ReadQuesionTitle {
         private Long qnaBoardId;
         private String title;
@@ -70,6 +70,7 @@ public class QnaBoardResponse {
     @NoArgsConstructor
     @Getter
     @Builder
+    @ToString
     public static class ReadQuestion {
         private Long qnaBoardId;
         private String question;

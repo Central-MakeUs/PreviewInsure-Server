@@ -1,16 +1,14 @@
 package cmc15.backend.global;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class CustomResponseEntity<T> {
 
     private int code;

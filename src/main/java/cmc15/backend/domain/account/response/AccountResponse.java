@@ -4,10 +4,7 @@ import cmc15.backend.domain.account.entity.Account;
 import cmc15.backend.domain.account.entity.AccountInsurance;
 import cmc15.backend.domain.account.entity.InsuranceType;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 import static lombok.AccessLevel.PRIVATE;
@@ -19,6 +16,7 @@ public class AccountResponse {
     @Getter
     @Builder
     @JsonInclude(NON_NULL)
+    @ToString
     public static class OAuthConnection {
         private Long accountId;
         private String atk;
@@ -54,6 +52,7 @@ public class AccountResponse {
     @NoArgsConstructor(access = PRIVATE)
     @Getter
     @Builder
+    @ToString
     public static class Connection {
         private Long accountId;
         private String nickName;
@@ -76,6 +75,7 @@ public class AccountResponse {
     @NoArgsConstructor(access = PRIVATE)
     @Getter
     @Builder
+    @ToString
     public static class NickName {
         private String nickName;
 
@@ -90,6 +90,7 @@ public class AccountResponse {
     @NoArgsConstructor(access = PRIVATE)
     @Getter
     @Builder
+    @ToString
     public static class Insurances {
         private Long accountInsuranceId;
         private InsuranceType insuranceType;
@@ -108,6 +109,7 @@ public class AccountResponse {
     @NoArgsConstructor(access = PRIVATE)
     @Getter
     @Builder
+    @ToString
     public static class Detail {
         private Long accountId;
         private String email;
