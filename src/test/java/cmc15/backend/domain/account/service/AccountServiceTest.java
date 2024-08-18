@@ -31,7 +31,7 @@ class AccountServiceTest {
     @Autowired
     private EntityManager em;
 
-    @DisplayName("나이 입력 API")
+    @DisplayName("나이 입력 API_성공")
     @Test
     void 나이_입력_API_성공() {
         // given
