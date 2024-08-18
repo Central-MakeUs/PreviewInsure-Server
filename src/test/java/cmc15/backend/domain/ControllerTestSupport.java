@@ -1,6 +1,8 @@
 package cmc15.backend.domain;
 
 import cmc15.backend.domain.account.controller.AccountController;
+import cmc15.backend.domain.account.controller.AccountInsuranceController;
+import cmc15.backend.domain.account.controller.AccountInsuranceControllerTest;
 import cmc15.backend.domain.health.controller.HealthCheckController;
 import cmc15.backend.domain.insurance.controller.InsuranceController;
 import cmc15.backend.domain.qnaboard.controller.QnaBoardController;
@@ -11,7 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(controllers = {HealthCheckController.class, AccountController.class, QnaBoardController.class, InsuranceController.class})
+@WebMvcTest(controllers = {HealthCheckController.class, AccountController.class, QnaBoardController.class, InsuranceController.class, AccountInsuranceControllerTest.class})
 @AutoConfigureMockMvc(addFilters = false)
 public abstract class ControllerTestSupport {
 
@@ -32,4 +34,7 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected InsuranceController insuranceController;
+
+    @MockBean
+    protected AccountInsuranceController accountInsuranceController;
 }

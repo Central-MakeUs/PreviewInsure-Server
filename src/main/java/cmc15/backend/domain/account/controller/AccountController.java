@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -76,32 +74,6 @@ public class AccountController {
             @RequestBody @Valid final AccountRequest.Age request
     ) {
         return CustomResponseEntity.success(accountService.updateAge(accountId, request));
-    }
-
-    /**
-     * @param accountId
-     * @param request
-     * @return void
-     * @apiNote 인슈보딩 입력 API
-     */
-    @PatchMapping("/register/board")
-    public CustomResponseEntity<Void> updateInsureBoarding(
-            @AuthenticationPrincipal final Long accountId,
-            @RequestBody @Valid final AccountRequest.InsureBoarding request
-    ) {
-        return CustomResponseEntity.success(accountService.updateInsureBoarding(accountId, request));
-    }
-
-    /**
-     * @param accountId
-     * @return
-     * @apiNote 내가 가입한 보험 조회 API
-     */
-    @GetMapping("/account/insurances")
-    public CustomResponseEntity<List<AccountResponse.Insurances>> readAccountInsurances(
-            @AuthenticationPrincipal final Long accountId
-    ) {
-        return CustomResponseEntity.success(accountService.readAccountInsurances(accountId));
     }
 
     /**
