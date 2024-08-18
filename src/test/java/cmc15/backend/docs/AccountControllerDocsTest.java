@@ -59,8 +59,8 @@ public class AccountControllerDocsTest extends RestDocsSupport {
                         fieldWithPath("data.accountId").type(NUMBER).description("계정 ID"),
                         fieldWithPath("data.atk").type(STRING).description("발급된 accessToken"),
                         fieldWithPath("data.rtk").type(STRING).description("발급된 refreshToken"),
-                        fieldWithPath("data.isRegister").type(BOOLEAN).description("이메일"),
-                        fieldWithPath("data.nickname").type(STRING).description("별명"))
+                        fieldWithPath("data.nickname").type(STRING).description("별명"),
+                        fieldWithPath("data.redirectUrl").type(STRING).description("애플 로그인으로 인한 URL/ 클라이언트는 필요치 않음").optional())
                 .build();
 
         RestDocumentationResultHandler document = documentHandler("social-login", prettyPrint(), resource);

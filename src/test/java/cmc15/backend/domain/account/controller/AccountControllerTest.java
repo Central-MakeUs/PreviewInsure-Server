@@ -25,22 +25,6 @@ class AccountControllerTest extends ControllerTestSupport {
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("회원가입 API")
-    @Test
-    void 회원가입_API() throws Exception {
-        // given
-        AccountRequest.Register request = new AccountRequest.Register(
-                "김덕배", "hwsa10041@gmail.com", "abc123"
-        );
-
-        // when // then
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/account")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
     @DisplayName("랜덤 닉네임 생성 API")
     @Test
     void 랜덤_닉네임_생성_API() throws Exception {
