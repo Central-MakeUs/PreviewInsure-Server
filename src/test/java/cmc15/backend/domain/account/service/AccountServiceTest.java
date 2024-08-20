@@ -64,7 +64,7 @@ class AccountServiceTest {
 
         // then
         Optional<Account> assertAccount = accountRepository.findById(account.getAccountId());
-        assertThat(assertAccount.isEmpty()).isTrue();
+        assertThat(assertAccount.get().getDeleteAt()).isNotNull();
     }
 
     private static Account getAccountBuild(String email, String nickname) {
