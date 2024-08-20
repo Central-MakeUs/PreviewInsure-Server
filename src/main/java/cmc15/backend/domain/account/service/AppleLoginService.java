@@ -24,6 +24,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -54,6 +55,7 @@ public class AppleLoginService implements OAuth2Service {
     private final AppleSettings appleSettings;
     private final OAuthSettings oAuthSettings;
     private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Platform suppots() {
@@ -75,7 +77,7 @@ public class AppleLoginService implements OAuth2Service {
         Account account = optionalAccount.orElseGet(() ->
                 accountRepository.save(Account.builder()
                         .email(appleLoginResponse.getEmail())
-                        .password(oAuthSettings.getPassword())
+                        .password(passwordEncoder.encode(oAuthSettings.getNonEncryptionPassword()))
                         .appleAccount(appleLoginResponse.getSub())
                         .authority(ROLE_USER)
                         .build())

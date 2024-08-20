@@ -51,9 +51,6 @@ public class GoogleLoginService implements OAuth2Service {
         GoogleUserResponse googleUser = exchangeGoogleUser(authorizationCode);
         Optional<Account> optionalAccount = accountRepository.findByEmail(googleUser.getEmail());
 
-        System.out.println("logger : " + oAuthSettings.getPassword());
-        System.out.println("logger : " + oAuthSettings.getNonEncryptionPassword());
-
         Account account = optionalAccount.orElseGet(() ->
                 accountRepository.save(Account.builder()
                         .email(googleUser.getEmail())
