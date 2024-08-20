@@ -9,6 +9,7 @@ import cmc15.backend.domain.account.response.AccountResponse;
 import cmc15.backend.domain.account.response.GoogleTokenResponse;
 import cmc15.backend.domain.account.response.GoogleUserResponse;
 import cmc15.backend.global.config.jwt.TokenProvider;
+import cmc15.backend.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 import static cmc15.backend.domain.account.entity.Authority.ROLE_USER;
 import static cmc15.backend.domain.account.entity.Platform.GOOGLE;
+import static cmc15.backend.global.Result.DELETED_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +51,7 @@ public class GoogleLoginService implements OAuth2Service {
     @Override
     public AccountResponse.OAuthConnection toSocialLoginAccount(final Platform platform, final String authorizationCode) {
         GoogleUserResponse googleUser = exchangeGoogleUser(authorizationCode);
+        validateDeletedUser(googleUser);
         Optional<Account> optionalAccount = accountRepository.findByEmail(googleUser.getEmail());
 
         Account account = optionalAccount.orElseGet(() ->
@@ -62,6 +65,12 @@ public class GoogleLoginService implements OAuth2Service {
         String rtk = tokenProvider.createRefreshToken(account.getEmail());
 
         return AccountResponse.OAuthConnection.to(account, atk, rtk);
+    }
+
+    private void validateDeletedUser(GoogleUserResponse googleUser) {
+        if (accountRepository.findByDeleteAccount(googleUser.getEmail()) != null) {
+            throw new CustomException(DELETED_USER);
+        }
     }
 
     // 구글 토큰으로 유저 정보 가져오기

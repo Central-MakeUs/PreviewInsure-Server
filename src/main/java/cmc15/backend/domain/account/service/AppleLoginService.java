@@ -10,6 +10,7 @@ import cmc15.backend.domain.account.response.AppleLoginResponse;
 import cmc15.backend.domain.account.response.AppleSocialTokenInfoResponse;
 import cmc15.backend.global.config.jwt.TokenDecoder;
 import cmc15.backend.global.config.jwt.TokenProvider;
+import cmc15.backend.global.exception.CustomException;
 import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -40,6 +41,7 @@ import java.util.Optional;
 
 import static cmc15.backend.domain.account.entity.Authority.ROLE_USER;
 import static cmc15.backend.domain.account.entity.Platform.APPLE;
+import static cmc15.backend.global.Result.DELETED_USER;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -72,7 +74,7 @@ public class AppleLoginService implements OAuth2Service {
         AppleSocialTokenInfoResponse response = exchangeAppleSocialToken(appleSettings.getClientId(), generateClientSecret(), AUTHORIZATION_CODE, code);
         String idToken = response.getIdToken();
         AppleLoginResponse appleLoginResponse = TokenDecoder.decodePayload(idToken, AppleLoginResponse.class);
-
+        validateDeletedUser(appleLoginResponse);
         Optional<Account> optionalAccount = accountRepository.findByAppleAccount(appleLoginResponse.getSub());
         Account account = optionalAccount.orElseGet(() ->
                 accountRepository.save(Account.builder()
@@ -89,6 +91,12 @@ public class AppleLoginService implements OAuth2Service {
         String successUrl = appleSettings.getRedirectSuccess() + atk + "&nickname=" + nickname;
 
         return AccountResponse.OAuthConnection.toRedirect(account, atk, rtk, successUrl);
+    }
+
+    private void validateDeletedUser(AppleLoginResponse appleLoginResponse) {
+        if (accountRepository.findByDeleteAppleAccount(appleLoginResponse.getSub()) != null) {
+            throw new CustomException(DELETED_USER);
+        }
     }
 
     private AppleSocialTokenInfoResponse exchangeAppleSocialToken(String clientId, String clientSecret, String grantType, String code) {

@@ -16,6 +16,7 @@ public enum Result {
     NOT_EMPTY_GENDER(-1002, "성별은 NULL은 허용되지만 빈 문자열은 허용되지 않습니다."),
     ALREADY_ADD_INSURANCE(-1003, "이미 등록된 보험 입니다."),
     NOT_MATCHED_PLATFORM(-1003, "지원되지 않거나 잘못된 소셜 로그인 플랫폼 입니다."),
+    DELETED_USER(-1004, "탈퇴한 유저입니다."),
 
     // 질문게시판 관련
     NOT_EMPTY_MESSAGE(-2001, "질문은 비어있을 수 없습니다."),
