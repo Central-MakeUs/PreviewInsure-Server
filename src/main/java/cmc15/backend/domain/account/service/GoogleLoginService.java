@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -33,6 +34,7 @@ public class GoogleLoginService implements OAuth2Service {
     public static final String GOOGLE_AUTH_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
     public static final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
     private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
     private final RestTemplate restTemplate;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -55,7 +57,7 @@ public class GoogleLoginService implements OAuth2Service {
         Account account = optionalAccount.orElseGet(() ->
                 accountRepository.save(Account.builder()
                         .email(googleUser.getEmail())
-                        .password(oAuthSettings.getPassword())
+                        .password(passwordEncoder.encode(oAuthSettings.getNonEncryptionPassword()))
                         .authority(ROLE_USER)
                         .build()));
 
