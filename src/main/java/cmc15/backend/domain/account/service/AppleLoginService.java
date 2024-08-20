@@ -74,7 +74,6 @@ public class AppleLoginService implements OAuth2Service {
         AppleSocialTokenInfoResponse response = exchangeAppleSocialToken(appleSettings.getClientId(), generateClientSecret(), AUTHORIZATION_CODE, code);
         String idToken = response.getIdToken();
         AppleLoginResponse appleLoginResponse = TokenDecoder.decodePayload(idToken, AppleLoginResponse.class);
-        validateDeletedUser(appleLoginResponse);
         Optional<Account> optionalAccount = accountRepository.findByAppleAccount(appleLoginResponse.getSub());
         Account account = optionalAccount.orElseGet(() ->
                 accountRepository.save(Account.builder()
@@ -85,6 +84,8 @@ public class AppleLoginService implements OAuth2Service {
                         .build())
         );
 
+        validateDeleteUser(account);
+
         String atk = tokenProvider.createAccessToken(account.getAccountId(), getAuthentication(account.getEmail(), oAuthSettings.getNonEncryptionPassword()));
         String rtk = tokenProvider.createRefreshToken(account.getEmail());
         String nickname = account.getNickName() == null ? "none" : encode(account.getNickName(), UTF_8);
@@ -93,8 +94,8 @@ public class AppleLoginService implements OAuth2Service {
         return AccountResponse.OAuthConnection.toRedirect(account, atk, rtk, successUrl);
     }
 
-    private void validateDeletedUser(AppleLoginResponse appleLoginResponse) {
-        if (accountRepository.findByDeleteAppleAccount(appleLoginResponse.getSub()) != null) {
+    private static void validateDeleteUser(Account account) {
+        if (account.getDeleteAt() != null) {
             throw new CustomException(DELETED_USER);
         }
     }

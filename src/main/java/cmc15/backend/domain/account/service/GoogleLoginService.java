@@ -51,7 +51,6 @@ public class GoogleLoginService implements OAuth2Service {
     @Override
     public AccountResponse.OAuthConnection toSocialLoginAccount(final Platform platform, final String authorizationCode) {
         GoogleUserResponse googleUser = exchangeGoogleUser(authorizationCode);
-        validateDeletedUser(googleUser);
         Optional<Account> optionalAccount = accountRepository.findByEmail(googleUser.getEmail());
 
         Account account = optionalAccount.orElseGet(() ->
@@ -61,14 +60,15 @@ public class GoogleLoginService implements OAuth2Service {
                         .authority(ROLE_USER)
                         .build()));
 
+        validateDeleteUser(account);
         String atk = tokenProvider.createAccessToken(account.getAccountId(), getAuthentication(account.getEmail(), oAuthSettings.getNonEncryptionPassword()));
         String rtk = tokenProvider.createRefreshToken(account.getEmail());
 
         return AccountResponse.OAuthConnection.to(account, atk, rtk);
     }
 
-    private void validateDeletedUser(GoogleUserResponse googleUser) {
-        if (accountRepository.findByDeleteAccount(googleUser.getEmail()) != null) {
+    private static void validateDeleteUser(Account account) {
+        if (account.getDeleteAt() != null) {
             throw new CustomException(DELETED_USER);
         }
     }

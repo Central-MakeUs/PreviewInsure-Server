@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -21,7 +20,6 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor
 @Builder
 @Getter
-@SQLRestriction("delete_at IS NULL")
 @SQLDelete(sql = "UPDATE account SET delete_at = CURRENT_TIMESTAMP where account_id = ?")
 public class Account {
 
