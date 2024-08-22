@@ -51,6 +51,7 @@ public class AccountRequest {
         @AllArgsConstructor
         @NoArgsConstructor
         @Getter
+        @ToString
         public static class InsureBoard {
             @NotNull(message = "보험 유형은 필수 값 입니다.")
             private InsuranceType insuranceType;
