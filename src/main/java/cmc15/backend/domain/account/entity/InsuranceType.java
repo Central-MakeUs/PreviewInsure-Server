@@ -17,6 +17,7 @@ public enum InsuranceType {
     ED("교육 보험"),
     SI("저축 보험"),
     DR("운전자 보험"),
+    AN("애견 보험"),
     DE("그 외");
 
     private final String typeContent;
