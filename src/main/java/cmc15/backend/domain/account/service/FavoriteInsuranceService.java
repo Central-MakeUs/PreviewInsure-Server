@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static cmc15.backend.global.Result.NOT_FOUND_USER;
+import static cmc15.backend.global.Result.*;
 
 @Service
 @RequiredArgsConstructor
@@ -49,5 +49,26 @@ public class FavoriteInsuranceService {
         List<FavoriteInsurance> favoriteInsurances = favoriteInsuranceRepository.findByAccount(account);
 
         return favoriteInsurances.stream().map(FavoriteInsuranceResponse.Detail::to).toList();
+    }
+
+    /**
+     * @param accountId
+     * @param request
+     * @apiNote 내 관심 보험 취소 API
+     */
+    public Void deleteFavoriteInsurance(final Long accountId, final FavoriteInsuranceRequest.Delete request) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
+        FavoriteInsurance favoriteInsurance = favoriteInsuranceRepository.findById(request.getFavoriteInsuranceId()).orElseThrow(() -> new CustomException(NOT_FOUND_FAVORITE_ACCOUNT));
+
+        validateDeleteFavoriteInsurance(account, favoriteInsurance);
+
+        favoriteInsuranceRepository.delete(favoriteInsurance);
+        return null;
+    }
+
+    private static void validateDeleteFavoriteInsurance(Account account, FavoriteInsurance favoriteInsurance) {
+        if (!account.getAccountId().equals(favoriteInsurance.getAccount().getAccountId())) {
+            throw new CustomException(NOT_MATCHED_FAVORITE_INSURANCE);
+        }
     }
 }

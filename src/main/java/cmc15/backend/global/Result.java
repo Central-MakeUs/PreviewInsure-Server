@@ -19,6 +19,8 @@ public enum Result {
     DELETED_USER(-1004, "탈퇴한 유저입니다."),
     NOT_FOUND_ACCOUNT_INSURANCE(-1006, "가입한 보험을 찾을 수 없습니다."),
     NOT_MATCHED_ACCOUNT_INSURANCE(-1007, "다른 사람의 가입한 보험에 접근하였습니다."),
+    NOT_FOUND_FAVORITE_ACCOUNT(-1008, "지정한 관심 보험을 찾을 수 없습니다."),
+    NOT_MATCHED_FAVORITE_INSURANCE(-1009, "다른 사람의 관심 보험에 접근하였습니다."),
 
     // 질문게시판 관련
     NOT_EMPTY_MESSAGE(-2001, "질문은 비어있을 수 없습니다."),

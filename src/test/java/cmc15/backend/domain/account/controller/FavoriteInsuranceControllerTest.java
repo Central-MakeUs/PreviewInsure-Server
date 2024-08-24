@@ -39,4 +39,19 @@ class FavoriteInsuranceControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @DisplayName("내 관심보험 취소 API")
+    @Test
+    void 내_관심보험_취소_API() throws Exception {
+        // given
+        FavoriteInsuranceRequest.Delete request = new FavoriteInsuranceRequest.Delete(1L);
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/account/favorite")
+                        .header("Authorization", "Bearer AccessToken")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }

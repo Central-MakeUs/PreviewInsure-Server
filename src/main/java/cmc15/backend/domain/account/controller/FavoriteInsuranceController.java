@@ -19,9 +19,9 @@ public class FavoriteInsuranceController {
     private final FavoriteInsuranceService favoriteInsuranceService;
 
     /**
-     * @apiNote 관심보험 등록 API
      * @param accountId
      * @param request
+     * @apiNote 관심보험 등록 API
      */
     @PostMapping("/account/favorite")
     public CustomResponseEntity<Void> addFavoriteInsurance(
@@ -32,13 +32,26 @@ public class FavoriteInsuranceController {
     }
 
     /**
-     * @apiNote 내 관심보험 전체 조회 API
      * @param accountId
+     * @apiNote 내 관심보험 전체 조회 API
      */
     @GetMapping("/account/favorite")
     public CustomResponseEntity<List<FavoriteInsuranceResponse.Detail>> readFavoriteInsurances(
             @AuthenticationPrincipal final Long accountId
     ) {
         return CustomResponseEntity.success(favoriteInsuranceService.readFavoriteInsurances(accountId));
+    }
+
+    /**
+     * @param accountId
+     * @param request
+     * @apiNote 내 관심 보험 취소 API
+     */
+    @DeleteMapping("/account/favorite")
+    public CustomResponseEntity<Void> deleteFavoriteInsurance(
+            @AuthenticationPrincipal final Long accountId,
+            @RequestBody @Valid final FavoriteInsuranceRequest.Delete request
+    ) {
+        return CustomResponseEntity.success(favoriteInsuranceService.deleteFavoriteInsurance(accountId, request));
     }
 }

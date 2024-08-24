@@ -97,4 +97,34 @@ public class FavoriteInsuranceControllerDocsTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andDo(document);
     }
+
+    @DisplayName("내 관심보험 취소 API")
+    @Test
+    void 내_관심보험_취소_API() throws Exception {
+        // given
+        FavoriteInsuranceRequest.Delete request = new FavoriteInsuranceRequest.Delete(1L);
+
+        ResourceSnippetParameters resource = ResourceSnippetParameters.builder()
+                .tag("계정")
+                .summary("내 관심보험 취소 API")
+                .requestHeaders(headerWithName("Authorization")
+                        .description("Swagger 요청시 해당 입력칸이 아닌 우측 상단 자물쇠 또는 Authorize 버튼을 이용해 토큰을 넣어주세요"))
+                .requestFields(
+                        fieldWithPath("favoriteInsuranceId").type(NUMBER).description("내 관심보험 Id"))
+                .responseFields(
+                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(STRING).description("상태 메세지"))
+                .build();
+
+        RestDocumentationResultHandler document = documentHandler("delete-favorite-insurance", prettyPrint(), prettyPrint(), resource);
+
+        // when // then
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/account/favorite")
+                        .header("Authorization", "Bearer AccessToken")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document);
+    }
 }
