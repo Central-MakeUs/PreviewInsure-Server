@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static cmc15.backend.global.Result.NOT_FOUND_USER;
+import static cmc15.backend.global.Result.*;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +70,27 @@ public class AccountInsuranceService {
                     .insuranceType(insureBoard.getInsuranceType())
                     .insuranceCompany(insureBoard.getInsuranceCompany())
                     .build());
+        }
+    }
+
+    /**
+     * @param accountId
+     * @param request
+     * @apiNote 내가 가입한 보험 취소 API
+     */
+    public Void deleteAccountInsurance(Long accountId, AccountRequest.DeleteInsurance request) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
+        AccountInsurance accountInsurance = accountInsuranceRepository.findById(request.getAccountInsuranceId()).orElseThrow(() -> new CustomException(NOT_FOUND_ACCOUNT_INSURANCE));
+
+        validateDeleteAccount(account, accountInsurance);
+
+        accountInsuranceRepository.delete(accountInsurance);
+        return null;
+    }
+
+    private static void validateDeleteAccount(Account account, AccountInsurance accountInsurance) {
+        if (!account.getAccountId().equals(accountInsurance.getAccount().getAccountId())) {
+            throw new CustomException(NOT_MATCHED_ACCOUNT_INSURANCE);
         }
     }
 }

@@ -69,4 +69,12 @@ public class AccountRequest {
         @NotNull(message = "닉네임은 필수 값 입니다.")
         private String nickname;
     }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    @ToString
+    public static class DeleteInsurance {
+        private Long accountInsuranceId;
+    }
 }

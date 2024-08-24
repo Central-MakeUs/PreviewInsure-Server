@@ -43,4 +43,17 @@ public class AccountInsuranceController {
     ) {
         return CustomResponseEntity.success(accountInsuranceService.readAccountInsurances(accountId));
     }
+
+    /**
+     * @param accountId
+     * @param request
+     * @apiNote 내가 가입한 보험 취소 API
+     */
+    @DeleteMapping("/account/insurance")
+    public CustomResponseEntity<Void> deleteAccountInsurance(
+            @AuthenticationPrincipal final Long accountId,
+            @RequestBody @Valid final AccountRequest.DeleteInsurance request
+    ) {
+        return CustomResponseEntity.success(accountInsuranceService.deleteAccountInsurance(accountId, request));
+    }
 }

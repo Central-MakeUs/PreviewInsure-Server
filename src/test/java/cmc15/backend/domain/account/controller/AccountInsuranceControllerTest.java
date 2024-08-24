@@ -54,4 +54,16 @@ public class AccountInsuranceControllerTest extends ControllerTestSupport {
                 .andExpect(status().isOk());
     }
 
+    @DisplayName("내가 가입한 보험 취소 API")
+    @Test
+    void 내가_가입한_보험_취소_API() throws Exception {
+        // given
+        AccountRequest.DeleteInsurance request = new AccountRequest.DeleteInsurance(1L);
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/account/insurance")
+                .header("Authorization", "Bearer AccessToken")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(APPLICATION_JSON));
+    }
 }

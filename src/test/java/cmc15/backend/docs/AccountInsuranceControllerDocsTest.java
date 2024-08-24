@@ -113,4 +113,30 @@ public class AccountInsuranceControllerDocsTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andDo(document);
     }
+
+    @DisplayName("내가 가입한 보험 취소 API")
+    @Test
+    void 내가_가입한_보험_취소_API() throws Exception {
+        // given
+        AccountRequest.DeleteInsurance request = new AccountRequest.DeleteInsurance(1L);
+
+        ResourceSnippetParameters resource = ResourceSnippetParameters.builder()
+                .tag("계정")
+                .summary("내가 가입한 보험 취소 API")
+                .requestFields(
+                        fieldWithPath("accountInsuranceId").type(NUMBER).description("내가 가입한 보험 Id"))
+                .responseFields(
+                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(STRING).description("상태 메세지"))
+                .build();
+
+        RestDocumentationResultHandler document = documentHandler("deltete-account-insurance", prettyPrint(), prettyPrint(), resource);
+
+        // when // then
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/account/insurance")
+                .header("Authorization", "Bearer AccessToken")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(APPLICATION_JSON))
+                .andDo(document);
+    }
 }
