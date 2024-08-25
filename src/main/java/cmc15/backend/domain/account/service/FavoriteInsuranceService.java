@@ -56,12 +56,12 @@ public class FavoriteInsuranceService {
      * @param request
      * @apiNote 내 관심 보험 취소 API
      */
+    @Transactional
     public Void deleteFavoriteInsurance(final Long accountId, final FavoriteInsuranceRequest.Delete request) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         FavoriteInsurance favoriteInsurance = favoriteInsuranceRepository.findById(request.getFavoriteInsuranceId()).orElseThrow(() -> new CustomException(NOT_FOUND_FAVORITE_ACCOUNT));
 
         validateDeleteFavoriteInsurance(account, favoriteInsurance);
-
         favoriteInsuranceRepository.delete(favoriteInsurance);
         return null;
     }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 
@@ -23,5 +24,6 @@ public class FavoriteInsurance {
     @ManyToOne(fetch = LAZY)
     private Account account;
 
+    @Enumerated(STRING)
     private InsuranceType insuranceType;
 }
