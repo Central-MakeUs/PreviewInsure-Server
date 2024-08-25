@@ -43,6 +43,5 @@ public class QnaBoard {
     private InsuranceType insuranceType;
 
     // 추천된 Link를 관리하는 String(복잡한 연관관계 및 Join을 최적화하기 위한 String 처리)
-    @NotNull
     private String insuranceLinks;
 }

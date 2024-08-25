@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static cmc15.backend.global.Result.*;
@@ -105,11 +106,28 @@ public class QnaBoardService {
 
         if (insuranceType != null) {
             Page<QnaBoard> qnaBoardPage = qnaBoardRepository.findByInsuranceTypeAndIsShare(InsuranceType.valueOf(insuranceType), paging, true);
-            return qnaBoardPage.map(QnaBoardResponse.ReadQuestion::to);
+            return getReadQuestions(qnaBoardPage);
         }
 
         Page<QnaBoard> qnaBoardPage = qnaBoardRepository.findAllByIsShare(paging, true);
-        return qnaBoardPage.map(QnaBoardResponse.ReadQuestion::to);
+        return getReadQuestions(qnaBoardPage);
+    }
+
+    private Page<QnaBoardResponse.ReadQuestion> getReadQuestions(Page<QnaBoard> qnaBoardPage) {
+        return qnaBoardPage.map(qnaBoard -> {
+            List<InsuranceCallResponse.InsuranceLink> links = new ArrayList<>();
+            String insuranceLinks = qnaBoard.getInsuranceLinks();
+            if (insuranceLinks != null) {
+                for (String object : insuranceLinks.split("\\$")) {
+                    System.out.println(object);
+                    String[] recommendInsurance = object.split(",");
+                    String insuranceCompany = recommendInsurance[0];
+                    String link = recommendInsurance[1];
+                    links.add(InsuranceCallResponse.InsuranceLink.to(insuranceCompany, link));
+                }
+            }
+            return QnaBoardResponse.ReadQuestion.to(qnaBoard, links);
+        });
     }
 
     /**
@@ -118,7 +136,18 @@ public class QnaBoardService {
      */
     public QnaBoardResponse.ReadQuestion readQuestion(final Long accountId, final Long qnaBoardId) {
         QnaBoard qnaBoard = qnaBoardRepository.findById(qnaBoardId).orElseThrow(() -> new CustomException(NOT_FOUND_QNA_BOARD));
-        return QnaBoardResponse.ReadQuestion.to(qnaBoard);
-    }
+        List<InsuranceCallResponse.InsuranceLink> links = new ArrayList<>();
 
+        String insuranceLinks = qnaBoard.getInsuranceLinks();
+        if (insuranceLinks != null) {
+            for (String object : insuranceLinks.split("\\$")) {
+                String[] recommendInsurance = object.split(",");
+                String insuranceCompany = recommendInsurance[0];
+                String link = recommendInsurance[1];
+                links.add(InsuranceCallResponse.InsuranceLink.to(insuranceCompany, link));
+            }
+        }
+
+        return QnaBoardResponse.ReadQuestion.to(qnaBoard, links);
+    }
 }

@@ -45,8 +45,6 @@ public class QnaBoardController {
         return CustomResponseEntity.success(qnaBoardService.readQuesionTitles(accountId));
     }
 
-    // TODO: 8/3/24 QnA 게시판 구현 필요
-
     /**
      * @param accountId
      * @param page

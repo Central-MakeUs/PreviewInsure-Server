@@ -34,23 +34,6 @@ public class QnaBoardResponse {
         }
     }
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    @Builder
-    @ToString
-    public static class Link {
-        private String insuranceCompany;
-        private String insuranceLink;
-
-        public static Link to(final String insuranceCompany, final String insuranceLink) {
-            return Link.builder()
-                    .insuranceCompany(insuranceCompany)
-                    .insuranceLink(insuranceLink)
-                    .build();
-        }
-    }
-
     @AllArgsConstructor(access = PRIVATE)
     @NoArgsConstructor(access = PRIVATE)
     @Getter
@@ -79,12 +62,14 @@ public class QnaBoardResponse {
         private Long qnaBoardId;
         private String question;
         private String answer;
+        private List<InsuranceCallResponse.InsuranceLink> links;
 
-        public static ReadQuestion to(QnaBoard qnaBoard) {
+        public static ReadQuestion to(QnaBoard qnaBoard, List<InsuranceCallResponse.InsuranceLink> links) {
             return ReadQuestion.builder()
                     .qnaBoardId(qnaBoard.getQnaBoardId())
                     .question(qnaBoard.getQuesion())
                     .answer(qnaBoard.getAnswer())
+                    .links(links)
                     .build();
         }
     }
