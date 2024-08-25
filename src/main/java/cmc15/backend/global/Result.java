@@ -26,7 +26,8 @@ public enum Result {
     NOT_EMPTY_MESSAGE(-2001, "질문은 비어있을 수 없습니다."),
     MESSAGE_SIZE_ERROR(-2002, "질문은 최소 4글자 이상, 최대 300 글자 이하입니다."),
     USE_BANNED_WORD(-2003, "질문에 욕설을 사용할 수 없습니다."),
-    NOT_FOUND_QNA_BOARD(-2003, "게시글을 찾을 수 없습니다.");
+    NOT_FOUND_QNA_BOARD(-2003, "게시글을 찾을 수 없습니다."),
+    ERROR_PROMPT(-2005, "AI의 답변이 올바르지 않아 답변을 제공하기 어렵습니다.");
 
     private final int code;
     private final String message;

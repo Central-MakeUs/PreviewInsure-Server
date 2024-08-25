@@ -3,6 +3,8 @@ package cmc15.backend.domain.qnaboard.dto.response;
 import cmc15.backend.domain.qnaboard.entity.QnaBoard;
 import lombok.*;
 
+import java.util.List;
+
 import static lombok.AccessLevel.PRIVATE;
 
 public class QnaBoardResponse {
@@ -18,14 +20,16 @@ public class QnaBoardResponse {
         private String answer;
         private Boolean isShare;
         private String insuranceType;
+        private List<InsuranceCallResponse.InsuranceLink> links;
 
-        public static Input to(final QnaBoard qnaBoard) {
+        public static Input to(final QnaBoard qnaBoard, final List<InsuranceCallResponse.InsuranceLink> links) {
             return Input.builder()
                     .qnaBoardId(qnaBoard.getQnaBoardId())
                     .quesion(qnaBoard.getQuesion())
                     .answer(qnaBoard.getAnswer())
                     .isShare(qnaBoard.getIsShare())
                     .insuranceType(qnaBoard.getInsuranceType().getTypeContent())
+                    .links(links)
                     .build();
         }
     }
