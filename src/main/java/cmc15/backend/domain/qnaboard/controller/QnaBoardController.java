@@ -61,10 +61,10 @@ public class QnaBoardController {
     }
 
     /**
-     * @apiNote 질문 게시판 상세 조회 API
      * @param accountId
      * @param qnaBoardId
      * @return
+     * @apiNote 질문 게시판 상세 조회 API
      */
     @GetMapping("/question/detail")
     public CustomResponseEntity<QnaBoardResponse.ReadQuestion> readQuestion(
@@ -72,5 +72,18 @@ public class QnaBoardController {
             @RequestParam final Long qnaBoardId
     ) {
         return CustomResponseEntity.success(qnaBoardService.readQuestion(accountId, qnaBoardId));
+    }
+
+    /**
+     * @param accountId
+     * @param request
+     * @apiNote 질문 업데이트 API
+     */
+    @PatchMapping("/question")
+    public CustomResponseEntity<QnaBoardResponse.Input> updateQuesion(
+            @AuthenticationPrincipal final Long accountId,
+            @RequestBody @Valid final QnaBoardRequest.Update request
+    ) {
+        return CustomResponseEntity.success(qnaBoardService.updateQuesion(accountId, request));
     }
 }

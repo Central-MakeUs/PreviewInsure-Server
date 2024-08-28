@@ -58,7 +58,6 @@ public class AccountInsuranceController {
     }
 
     /**
-     *
      * @param accountId
      * @param request
      * @apiNote 내가 가입한 보험 수정 API

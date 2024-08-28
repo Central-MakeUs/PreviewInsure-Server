@@ -25,6 +25,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithNam
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
@@ -296,6 +297,65 @@ public class QnaBoardControllerDocsTest extends RestDocsSupport {
                         .param("qnaBoardId", "148"))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andDo(document);
+    }
+
+    @DisplayName("질문 업데이트 API")
+    @Test
+    void 질문_업데이트_API() throws Exception{
+        // given
+        QnaBoardRequest.Update request = new QnaBoardRequest.Update(1L, "질문");
+
+        // InsuranceLink 객체 생성
+        InsuranceCallResponse.InsuranceLink link1 = new InsuranceCallResponse.InsuranceLink("삼성화재", "https://www.samsungfire.com");
+        InsuranceCallResponse.InsuranceLink link2 = new InsuranceCallResponse.InsuranceLink("현대해상", "https://www.hi.co.kr");
+        InsuranceCallResponse.InsuranceLink link3 = new InsuranceCallResponse.InsuranceLink("DB손해보험", "https://www.idbins.com");
+
+        // InsuranceLink 리스트 생성
+        List<InsuranceCallResponse.InsuranceLink> links = new ArrayList<>();
+        links.add(link1);
+        links.add(link2);
+        links.add(link3);
+
+        given(qnaBoardService.updateQuesion(any(), any(QnaBoardRequest.Update.class)))
+                .willReturn(QnaBoardResponse.Input.builder()
+                        .qnaBoardId(1L)
+                        .quesion("보험을 알아보기 쉬운 애플리케이션은 뭘까?")
+                        .answer("보험을 알아보기 쉬운 애플리케이션을 찾고 계시는 군요! ...")
+                        .isShare(true)
+                        .insuranceType("하나손해보험")
+                        .links(links)
+                        .build()
+                );
+
+        ResourceSnippetParameters resources = ResourceSnippetParameters.builder()
+                .tag("질문 게시판/AI")
+                .summary("질문 업데이트(AI) API")
+                .requestHeaders(headerWithName("Authorization")
+                        .description("Swagger 요청시 해당 입력칸이 아닌 우측 상단 자물쇠 또는 Authorize 버튼을 이용해 토큰을 넣어주세요"))
+                .requestFields(
+                        fieldWithPath("quesionId").type(NUMBER).description("질문 ID"),
+                        fieldWithPath("quesion").type(STRING).description("명령 메시지"))
+                .responseFields(
+                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(STRING).description("상태 메세지"),
+                        fieldWithPath("data.qnaBoardId").type(NUMBER).description("질문 Id"),
+                        fieldWithPath("data.quesion").type(STRING).description("질문"),
+                        fieldWithPath("data.answer").type(STRING).description("AI 대답"),
+                        fieldWithPath("data.isShare").type(BOOLEAN).description("전체 게시판 질문 공유 여부"),
+                        fieldWithPath("data.insuranceType").type(STRING).description("보험 유형"),
+                        fieldWithPath("data.links[]").type(ARRAY).description("보험 추천 사이트 리스트"),
+                        fieldWithPath("data.links[].insuranceCompany").type(STRING).description("보험 추천된 회사 이름"),
+                        fieldWithPath("data.links[].link").type(STRING).description("보험 추천된 회사 사이트 주소"))
+                .build();
+
+        RestDocumentationResultHandler document = documentHandler("update-quesion", prettyPrint(), prettyPrint(), resources);
+
+        // when // then
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/question")
+                .header("Authorization", "Bearer AccessToken")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(APPLICATION_JSON))
                 .andDo(document);
     }
 }

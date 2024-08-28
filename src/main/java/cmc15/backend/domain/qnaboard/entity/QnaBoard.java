@@ -44,4 +44,9 @@ public class QnaBoard {
 
     // 추천된 Link를 관리하는 String(복잡한 연관관계 및 Join을 최적화하기 위한 String 처리)
     private String insuranceLinks;
+
+    public void updateQnaBoard(String answer, String insuranceLinks) {
+        this.answer = answer;
+        this.insuranceLinks = insuranceLinks;
+    }
 }

@@ -5,9 +5,9 @@ import cmc15.backend.domain.account.entity.InsuranceType;
 import cmc15.backend.domain.qnaboard.dto.request.QnaBoardRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,7 +23,7 @@ class QnaBoardControllerTest extends ControllerTestSupport {
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/quesion")
                         .header("Authorization", "Bearer AccessToken")
                         .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -66,5 +66,18 @@ class QnaBoardControllerTest extends ControllerTestSupport {
                         .param("qnaBoardId", "148"))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @DisplayName("질문 업데이트 API")
+    @Test
+    void 질문_업데이트_API() throws Exception{
+        // given
+        QnaBoardRequest.Update request = new QnaBoardRequest.Update(1L, "질문");
+
+        // when // then
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/question")
+                .header("Authorization", "Bearer AccessToken")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(APPLICATION_JSON));
     }
 }

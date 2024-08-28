@@ -17,4 +17,13 @@ public class QnaBoardRequest {
         private Boolean isShare;
         private InsuranceType insuranceType;
     }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    @ToString
+    public static class Update {
+        private Long quesionId;
+        private String quesion;
+    }
 }

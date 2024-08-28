@@ -29,6 +29,15 @@ import static cmc15.backend.global.Result.*;
 @RequiredArgsConstructor
 public class QnaBoardService {
 
+    public static final String PROMPT = "너는 보험설계사야. 너에게 보험에 대한 질문을 할거야. 질문에 대해서 300자 이내로 설명해주고, 한국에서 사용할 수 있는 실제 보험 상품을 무조건 3개 추천해줘. 보험 추천 방식은 \n" +
+            "ObjectMapper로 파싱할 수 있는 JSON 형태로 답변을 해줄거야, 아래는 예시야.\n" +
+            "{\n" +
+            "\"context\" : \"질문에 대한 답변 300자 이내\",\n" +
+            "\"links\" : [\n" +
+            "{\"insuranceCompany\" : \"추천된 보험회사 이름\", \"link\" : \"추천된 보험회사 사이트 주소\"}, ...]\n" +
+            "}\n\n" +
+            "질문 : ";
+
     private final QnaBoardValidator qnaBoardValidator;
     private final OpenAiChatModel openAiChatModel;
     private final ObjectMapper objectMapper;
@@ -44,16 +53,7 @@ public class QnaBoardService {
         qnaBoardValidator.validateInputQuesion(request.getQuesion());
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
 
-        String prompt = "너는 보험설계사야. 너에게 보험에 대한 질문을 할거야. 질문에 대해서 300자 이내로 설명해주고, 한국에서 사용할 수 있는 실제 보험 상품을 무조건 3개 추천해줘. 보험 추천 방식은 \n" +
-                "ObjectMapper로 파싱할 수 있는 JSON 형태로 답변을 해줄거야, 아래는 예시야.\n" +
-                "{\n" +
-                "\"context\" : \"질문에 대한 답변 300자 이내\",\n" +
-                "\"links\" : [\n" +
-                "{\"insuranceCompany\" : \"추천된 보험회사 이름\", \"link\" : \"추천된 보험회사 사이트 주소\"}, ...]\n" +
-                "}\n\n" +
-                "질문 : ";
-
-        String call = openAiChatModel.call(prompt + request.getQuesion());
+        String call = openAiChatModel.call(PROMPT + request.getQuesion());
         InsuranceCallResponse insuranceCallResponse = callParsingJson(call);
         List<InsuranceCallResponse.InsuranceLink> links = insuranceCallResponse.getLinks();
         return QnaBoardResponse.Input.to(qnaBoardRepository.save(QnaBoard.builder()
@@ -149,5 +149,24 @@ public class QnaBoardService {
         }
 
         return QnaBoardResponse.ReadQuestion.to(qnaBoard, links);
+    }
+
+    /**
+     * @param accountId
+     * @param request
+     * @apiNote 질문 업데이트 API
+     */
+    @Transactional
+    public QnaBoardResponse.Input updateQuesion(Long accountId, QnaBoardRequest.Update request) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
+        QnaBoard qnaBoard = qnaBoardRepository.findByQnaBoardIdAndAccount(request.getQuesionId(), account).orElseThrow(() -> new CustomException(NOT_FOUND_QNA_BOARD));
+
+        qnaBoardValidator.validateInputQuesion(request.getQuesion());
+        String call = openAiChatModel.call(PROMPT + request.getQuesion());
+        InsuranceCallResponse insuranceCallResponse = callParsingJson(call);
+        List<InsuranceCallResponse.InsuranceLink> links = insuranceCallResponse.getLinks();
+
+        qnaBoard.updateQnaBoard(insuranceCallResponse.getContext(), getInsuranceLinks(links));
+        return QnaBoardResponse.Input.to(qnaBoard, links);
     }
 }
