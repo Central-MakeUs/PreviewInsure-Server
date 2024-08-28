@@ -2,7 +2,6 @@ package cmc15.backend.domain.account.service;
 
 import cmc15.backend.domain.account.entity.Account;
 import cmc15.backend.domain.account.entity.AccountInsurance;
-import cmc15.backend.domain.account.entity.InsuranceType;
 import cmc15.backend.domain.account.repository.AccountInsuranceRepository;
 import cmc15.backend.domain.account.repository.AccountRepository;
 import cmc15.backend.domain.account.request.AccountRequest;
@@ -17,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 import static cmc15.backend.domain.account.entity.Authority.ROLE_USER;
+import static cmc15.backend.domain.account.entity.InsuranceType.LF;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -44,7 +43,7 @@ class AccountInsuranceServiceTest {
         Account account = accountRepository.save(getAccountBuild("test3@test.com", "테스트3"));
         AccountInsurance accountInsurance = accountInsuranceRepository.save(AccountInsurance.builder()
                 .account(account)
-                .insuranceType(InsuranceType.LF)
+                .insuranceType(LF)
                 .insuranceCompany("하나손해보험")
                 .build());
 
@@ -57,6 +56,30 @@ class AccountInsuranceServiceTest {
         // then
         Optional<AccountInsurance> assertAccountInsurance = accountInsuranceRepository.findById(accountInsurance.getAccountInsuranceId());
         assertThat(assertAccountInsurance.isEmpty()).isTrue();
+
+    }
+
+    @DisplayName("내 보험 수정 API_성공")
+    @Test
+    void 내_보험_수정_API_성공() {
+        // given
+        Account account = accountRepository.save(getAccountBuild("test5@test.com", "테스트5"));
+        AccountInsurance accountInsurance = accountInsuranceRepository.save(AccountInsurance.builder()
+                .account(account)
+                .insuranceType(LF)
+                .insuranceCompany("하나보험")
+                .build());
+
+        AccountRequest.UpdateAccountInsurance request = new AccountRequest.UpdateAccountInsurance(accountInsurance.getAccountInsuranceId(), accountInsurance.getInsuranceType(), "NH농협생명");
+
+        // when
+        accountInsuranceService.updateAccountInsurance(account.getAccountId(), request);
+        em.flush();
+        em.clear();
+
+        // then
+        AccountInsurance assertData = accountInsuranceRepository.findById(accountInsurance.getAccountInsuranceId()).get();
+        assertThat(assertData.getInsuranceCompany()).isEqualTo("NH농협생명");
 
     }
 

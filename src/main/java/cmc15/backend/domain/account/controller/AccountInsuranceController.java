@@ -56,4 +56,18 @@ public class AccountInsuranceController {
     ) {
         return CustomResponseEntity.success(accountInsuranceService.deleteAccountInsurance(accountId, request));
     }
+
+    /**
+     *
+     * @param accountId
+     * @param request
+     * @apiNote 내가 가입한 보험 수정 API
+     */
+    @PatchMapping("/account/insurance")
+    public CustomResponseEntity<Void> updateAccountInsurance(
+            @AuthenticationPrincipal final Long accountId,
+            @RequestBody @Valid final AccountRequest.UpdateAccountInsurance request
+    ) {
+        return CustomResponseEntity.success(accountInsuranceService.updateAccountInsurance(accountId, request));
+    }
 }

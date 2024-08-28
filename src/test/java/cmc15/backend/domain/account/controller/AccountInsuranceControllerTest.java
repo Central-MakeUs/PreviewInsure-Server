@@ -66,4 +66,17 @@ public class AccountInsuranceControllerTest extends ControllerTestSupport {
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(APPLICATION_JSON));
     }
+
+    @DisplayName("내가 가입한 보험 수정 API")
+    @Test
+    void 내가_가입한_보험_수정_API() throws Exception {
+        // given
+        AccountRequest.UpdateAccountInsurance request = new AccountRequest.UpdateAccountInsurance(1L, InsuranceType.LF, "NH농협생명");
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/account/insurance")
+                .header("Authorization", "Bearer AccessToken")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(APPLICATION_JSON));
+    }
 }

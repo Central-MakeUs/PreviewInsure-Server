@@ -77,4 +77,14 @@ public class AccountRequest {
     public static class DeleteInsurance {
         private Long accountInsuranceId;
     }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    @ToString
+    public static class UpdateAccountInsurance {
+        private Long accountInsuranceId;
+        private InsuranceType insuranceType;
+        private String insuranceCompany;
+    }
 }

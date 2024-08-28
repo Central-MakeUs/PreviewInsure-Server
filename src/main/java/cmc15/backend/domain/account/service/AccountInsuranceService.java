@@ -78,6 +78,7 @@ public class AccountInsuranceService {
      * @param request
      * @apiNote 내가 가입한 보험 취소 API
      */
+    @Transactional
     public Void deleteAccountInsurance(Long accountId, AccountRequest.DeleteInsurance request) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         AccountInsurance accountInsurance = accountInsuranceRepository.findById(request.getAccountInsuranceId()).orElseThrow(() -> new CustomException(NOT_FOUND_ACCOUNT_INSURANCE));
@@ -92,5 +93,28 @@ public class AccountInsuranceService {
         if (!account.getAccountId().equals(accountInsurance.getAccount().getAccountId())) {
             throw new CustomException(NOT_MATCHED_ACCOUNT_INSURANCE);
         }
+    }
+
+    /**
+     *
+     * @param accountId
+     * @param request
+     * @apiNote 내가 가입한 보험 수정 API
+     */
+    @Transactional
+    public Void updateAccountInsurance(
+            final Long accountId,
+            final AccountRequest.UpdateAccountInsurance request
+    ) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new CustomException(NOT_FOUND_USER));
+        AccountInsurance accountInsurance = getAccountInsurance(request, account);
+        accountInsurance.updateAccountInsurance(request.getInsuranceCompany());
+        return null;
+    }
+
+    private AccountInsurance getAccountInsurance(AccountRequest.UpdateAccountInsurance request, Account account) {
+        return accountInsuranceRepository.findByAccountInsuranceIdAndInsuranceTypeAndAccount(
+                request.getAccountInsuranceId(), request.getInsuranceType(), account
+        ).orElseThrow(() -> new CustomException(NOT_FOUND_ACCOUNT_INSURANCE));
     }
 }

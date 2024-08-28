@@ -26,4 +26,8 @@ public class AccountInsurance {
     private InsuranceType insuranceType;
 
     private String insuranceCompany;
+
+    public void updateAccountInsurance(String insuranceCompany) {
+        this.insuranceCompany = insuranceCompany;
+    }
 }

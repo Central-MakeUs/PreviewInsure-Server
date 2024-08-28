@@ -134,6 +134,33 @@ public class AccountInsuranceControllerDocsTest extends RestDocsSupport {
 
         // when // then
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/account/insurance")
+                        .header("Authorization", "Bearer AccessToken")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON))
+                .andDo(document);
+    }
+
+    @Test
+    void 내가_가입한_보험_수정_API() throws Exception {
+        // given
+        AccountRequest.UpdateAccountInsurance request = new AccountRequest.UpdateAccountInsurance(1L, InsuranceType.LF, "NH농협생명");
+
+        ResourceSnippetParameters resource = ResourceSnippetParameters.builder()
+                .tag("계정")
+                .summary("내가 가입한 보험 수정 API")
+                .requestFields(
+                        fieldWithPath("accountInsuranceId").type(NUMBER).description("내가 가입한 보험 Id"),
+                        fieldWithPath("insuranceType").type(STRING).description("내가 가입한 보험 Id"),
+                        fieldWithPath("insuranceCompany").type(STRING).description("내가 가입한 보험 Id"))
+                .responseFields(
+                        fieldWithPath("code").type(NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(STRING).description("상태 메세지"))
+                .build();
+
+        RestDocumentationResultHandler document = documentHandler("update-account-insurance", prettyPrint(), prettyPrint(), resource);
+
+        // when // then
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/account/insurance")
                 .header("Authorization", "Bearer AccessToken")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(APPLICATION_JSON))
