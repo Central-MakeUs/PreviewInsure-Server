@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.util.List;
 
+import static cmc15.backend.domain.account.entity.InsuranceCompany.getUrlByCompanyName;
 import static cmc15.backend.domain.insurance.entity.InsuranceCompanyImage.getImageUrlByCompanyName;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static lombok.AccessLevel.PRIVATE;
@@ -32,7 +33,7 @@ public class InsuranceResponse {
                     .nickName(account.getNickName())
                     .isSubscribed(accountInsurance.getAccountInsuranceId() != -1)
                     .insuranceCompany((accountInsurance.getAccountInsuranceId() != -1) ? accountInsurance.getInsuranceCompany() : null)
-                    .insuranceLink((accountInsurance.getAccountInsuranceId() != -1) ? "link" : null)
+                    .insuranceLink((accountInsurance.getAccountInsuranceId() != -1) ? getUrlByCompanyName(accountInsurance.getInsuranceCompany()) : null)
                     .insuranceRecommends(recommends)
                     .build();
         }
